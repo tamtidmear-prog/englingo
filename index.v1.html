@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FF8C61">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>EngLingo - เรียนภาษาอังกฤษ</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   CSS — EngLingo PWA
+   ═══════════════════════════════════════════ */
+:root {
+  --bg-primary: #FFF8F0;
+  --bg-secondary: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-nav: rgba(255,255,255,0.95);
+  --text-primary: #3D3D4E;
+  --text-secondary: #7A7A8E;
+  --text-muted: #A0A0B4;
+  --accent: #FF8C61;
+  --accent-light: #FFB088;
+  --accent-bg: rgba(255,140,97,0.1);
+  --accent-bg-hover: rgba(255,140,97,0.18);
+  --success: #7BC67E;
+  --warning: #FFD166;
+  --info: #6EC6FF;
+  --border: rgba(0,0,0,0.06);
+  --shadow-sm: 0 2px 10px rgba(255,140,97,0.08);
+  --shadow-md: 0 4px 20px rgba(255,140,97,0.12);
+  --shadow-lg: 0 8px 40px rgba(255,140,97,0.15);
+  --shadow-popup: 0 -4px 48px rgba(255,140,97,0.18);
+  --radius-sm: 14px;
+  --radius-md: 20px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+  --font-th: 'Sarabun', sans-serif;
+  --font-en: 'Inter', sans-serif;
+  --font-heading: 'Nunito', 'Inter', sans-serif;
+  --nav-height: 76px;
+  --header-height: 60px;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #1E1B2E;
+  --bg-secondary: #2A2740;
+  --bg-card: #322F48;
+  --bg-nav: rgba(30,27,46,0.96);
+  --text-primary: #F0EDF5;
+  --text-secondary: #B0ABBD;
+  --text-muted: #7A7590;
+  --accent: #FFB088;
+  --accent-light: #FFCDB2;
+  --accent-bg: rgba(255,176,136,0.12);
+  --accent-bg-hover: rgba(255,176,136,0.22);
+  --border: rgba(255,255,255,0.07);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.25);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.35);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.45);
+  --shadow-popup: 0 -4px 48px rgba(0,0,0,0.55);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html {
+  font-size: 16px;
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-th);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100dvh;
+  transition: background 0.4s, color 0.4s;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ── */
+.app-header {
+  position: fixed; top:0; left:0; right:0; z-index:100;
+  height: var(--header-height);
+  display: flex; align-items:center; justify-content:space-between;
+  padding: 0 20px;
+  background: var(--bg-nav);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-logo {
+  display:flex; align-items:center; gap:10px;
+  font-family: var(--font-heading);
+  font-weight:800; font-size:1.3rem;
+  color: var(--accent);
+}
+.app-logo svg { width:32px; height:32px; }
+
+.header-actions { display:flex; gap:8px; }
+
+.btn-icon {
+  width:42px; height:42px;
+  border-radius: var(--radius-full);
+  border:none; background: var(--accent-bg);
+  color: var(--accent);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition: all 0.2s ease;
+  font-size:1.15rem;
+}
+.btn-icon:hover { background: var(--accent-bg-hover); transform:scale(1.08); }
+.btn-icon:active { transform:scale(0.92); }
+
+/* ── Main Content ── */
+.app-content {
+  padding-top: calc(var(--header-height) + 16px);
+  padding-bottom: calc(var(--nav-height) + 24px);
+  min-height: 100dvh;
+}
+
+.page { display:none; padding:0 16px; animation: fadeIn 0.3s ease; }
+.page.active { display:block; }
+
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(8px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  border-left: 4px solid transparent;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+  cursor: pointer;
+}
+.card:hover { transform:translateY(-3px); box-shadow: var(--shadow-md); }
+.card:active { animation: cardBounce 0.4s ease; }
+
+@keyframes cardBounce {
+  0% { transform:scale(1); }
+  30% { transform:scale(0.96) translateY(2px); }
+  60% { transform:scale(1.02) translateY(-2px); }
+  100% { transform:scale(1) translateY(0); }
+}
+
+.card-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:12px;
+}
+
+.card-title {
+  font-family: var(--font-heading);
+  font-size:1.1rem; font-weight:700;
+  display:flex; align-items:center; gap:8px;
+}
+
+.level-badge {
+  display:inline-flex; align-items:center; gap:4px;
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  font-size:0.75rem; font-weight:600;
+  text-transform:uppercase; letter-spacing:0.5px;
+  background-image: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0));
+}
+.level-easy { background-color:#E8F9E9; color:#4CAF6A; }
+.level-medium { background-color:#FFF5E0; color:#E6A832; }
+.level-hard { background-color:#FFEAE0; color:#FF8C61; }
+[data-theme="dark"] .level-easy { background-color:rgba(123,198,126,0.18); color:#7BC67E; }
+[data-theme="dark"] .level-medium { background-color:rgba(255,209,102,0.18); color:#FFD166; }
+[data-theme="dark"] .level-hard { background-color:rgba(255,140,97,0.18); color:#FFB088; }
+
+
+.card-desc {
+  color: var(--text-secondary);
+  font-size:0.9rem; line-height:1.6;
+  margin-bottom:12px;
+}
+
+.card-meta {
+  display:flex; gap:16px; flex-wrap:wrap;
+  color: var(--text-muted); font-size:0.8rem;
+}
+.card-meta span { display:flex; align-items:center; gap:4px; }
+
+/* ── Reading View ── */
+.reading-header {
+  margin-bottom:20px;
+}
+.reading-title {
+  font-family: var(--font-heading);
+  font-size:1.5rem; font-weight:800;
+  margin-bottom:6px;
+}
+.reading-subtitle {
+  color: var(--text-secondary);
+  font-size:0.9rem;
+}
+
+.reading-passage {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 26px 22px;
+  margin-bottom:18px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  line-height: 2;
+  font-family: var(--font-en);
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.vocab-word {
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px dotted var(--accent);
+  padding: 2px 1px;
+  border-radius: 2px;
+  transition: background 0.2s, color 0.2s;
+  position: relative;
+}
+.vocab-word:hover, .vocab-word.active {
+  background: var(--accent-bg);
+}
+
+.thai-translation {
+  background: var(--accent-bg);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom:16px;
+  border-left: 4px solid var(--accent);
+  line-height: 1.9;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  display:none;
+}
+.thai-translation.show { display:block; animation: fadeIn 0.3s; }
+
+.toggle-translation {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:12px 22px;
+  min-height:48px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border:none; border-radius: var(--radius-full);
+  font-family: var(--font-th);
+  font-size:0.9rem; font-weight:600;
+  cursor:pointer; transition: all 0.3s ease;
+  margin-bottom:18px;
+}
+.toggle-translation:hover { background: var(--accent-bg-hover); transform:scale(1.02); }
+.toggle-translation .toggle-icon {
+  display:inline-block;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.toggle-translation.active .toggle-icon {
+  transform: rotate(180deg);
+}
+
+.back-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:8px 0;
+  background:none; border:none;
+  color: var(--accent);
+  font-family: var(--font-th);
+  font-size:0.95rem; font-weight:600;
+  cursor:pointer; margin-bottom:12px;
+}
+
+/* ── Word Popup ── */
+.word-popup-overlay {
+  position:fixed; inset:0; z-index:200;
+  background:rgba(0,0,0,0.4);
+  display:none; align-items:flex-end; justify-content:center;
+  animation: fadeIn 0.2s;
+}
+.word-popup-overlay.show { display:flex; }
+
+.word-popup {
+  background: var(--bg-card);
+  border-radius: 28px 28px 0 0;
+  padding: 28px 24px 40px;
+  width:100%; max-width:480px;
+  max-height:70vh; overflow-y:auto;
+  box-shadow: var(--shadow-popup);
+  animation: slideUp 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes slideUp {
+  from { transform:translateY(100%); }
+  to { transform:translateY(0); }
+}
+
+.popup-handle {
+  width:48px; height:5px;
+  background: var(--text-muted);
+  opacity:0.25;
+  border-radius:4px;
+  margin:0 auto 22px;
+}
+
+.popup-word {
+  font-family: var(--font-heading);
+  font-size:1.8rem; font-weight:800;
+  color: var(--accent);
+  margin-bottom:4px;
+}
+
+.popup-phonetic {
+  font-family: var(--font-en);
+  color: var(--text-muted);
+  font-size:0.9rem;
+  margin-bottom:4px;
+}
+
+.popup-pos {
+  display:inline-block;
+  padding:3px 10px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-radius: var(--radius-full);
+  font-size:0.75rem; font-weight:600;
+  margin-bottom:12px;
+}
+
+.popup-thai {
+  font-size:1.2rem; font-weight:600;
+  margin-bottom:20px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+}
+
+.popup-section-title {
+  font-size:0.8rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:1px;
+  color: var(--text-muted);
+  margin-bottom:10px;
+}
+
+.example-item {
+  margin-bottom:14px;
+  padding:14px 16px;
+  background: var(--accent-bg);
+  border-radius: var(--radius-sm);
+  border-left:3px solid var(--accent);
+}
+.example-en {
+  font-family: var(--font-en);
+  font-size:0.95rem;
+  font-weight:500;
+  margin-bottom:3px;
+  line-height:1.5;
+}
+.example-th {
+  font-size:0.85rem;
+  color: var(--text-secondary);
+  line-height:1.5;
+}
+
+/* ── Vocab List ── */
+.vocab-search {
+  width:100%;
+  padding:14px 20px 14px 44px;
+  border:1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-family: var(--font-th);
+  font-size:1rem;
+  margin-bottom:16px;
+  outline:none;
+  transition:border-color 0.2s, box-shadow 0.2s;
+}
+.vocab-search:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+.search-wrapper {
+  position:relative;
+}
+.search-icon {
+  position:absolute; left:16px; top:50%; transform:translateY(-50%);
+  color: var(--text-muted); font-size:1rem;
+  pointer-events:none;
+}
+
+.vocab-list-item {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 20px;
+  min-height:48px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  margin-bottom:10px;
+  border:1px solid var(--border);
+  cursor:pointer;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+.vocab-list-item:hover { box-shadow: var(--shadow-md); transform:translateY(-2px); }
+.vocab-list-item:active { animation: cardBounce 0.4s ease; }
+
+.vocab-item-left { flex:1; }
+.vocab-item-word {
+  font-family: var(--font-heading);
+  font-weight:700; font-size:1.1rem;
+  margin-bottom:2px;
+}
+.vocab-item-thai {
+  color: var(--text-secondary);
+  font-size:0.85rem;
+}
+.vocab-item-arrow {
+  color: var(--text-muted);
+  font-size:1.2rem;
+}
+
+/* ── Grammar ── */
+.grammar-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding:24px;
+  margin-bottom:14px;
+  border:1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor:pointer;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+}
+.grammar-card:hover { transform:translateY(-2px); box-shadow: var(--shadow-md); }
+.grammar-card:active { animation: cardBounce 0.4s ease; }
+
+.grammar-card-header {
+  display:flex; align-items:center; justify-content:space-between;
+}
+.grammar-card-title {
+  font-family: var(--font-heading);
+  font-weight:700; font-size:1.05rem;
+}
+.grammar-card-arrow {
+  color: var(--text-muted);
+  transition:transform 0.3s;
+  font-size:1.1rem;
+}
+.grammar-card.open .grammar-card-arrow { transform:rotate(180deg); }
+
+.grammar-card-body {
+  display:none;
+  margin-top:16px;
+  padding-top:16px;
+  border-top:1px solid var(--border);
+}
+.grammar-card.open .grammar-card-body { display:block; animation:fadeIn 0.3s; }
+
+.grammar-explain {
+  color: var(--text-secondary);
+  line-height:1.8;
+  font-size:0.95rem;
+  margin-bottom:14px;
+}
+.grammar-formula {
+  background: var(--accent-bg);
+  border-radius: var(--radius-sm);
+  padding:14px 18px;
+  font-family: var(--font-heading);
+  font-weight:700;
+  color: var(--accent);
+  margin-bottom:14px;
+  font-size:0.95rem;
+  text-align:center;
+}
+
+/* ── Settings ── */
+.settings-group {
+  margin-bottom:24px;
+}
+.settings-group-title {
+  font-size:0.8rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:1px;
+  color: var(--text-muted);
+  margin-bottom:12px;
+  padding-left:4px;
+}
+
+.setting-item {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 20px;
+  min-height:56px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  margin-bottom:10px;
+  border:1px solid var(--border);
+  transition: box-shadow 0.2s ease;
+}
+.setting-item:hover { box-shadow: var(--shadow-sm); }
+.setting-label {
+  display:flex; align-items:center; gap:12px;
+  font-weight:500;
+}
+.setting-icon {
+  width:36px; height:36px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-bg);
+  color: var(--accent);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem;
+}
+
+/* Toggle switch */
+.toggle {
+  position:relative;
+  width:52px; height:30px;
+}
+.toggle input { opacity:0; width:0; height:0; }
+.toggle-slider {
+  position:absolute; inset:0;
+  background: var(--text-muted);
+  border-radius: var(--radius-full);
+  cursor:pointer;
+  transition:0.3s;
+}
+.toggle-slider::before {
+  content:'';
+  position:absolute; left:3px; top:3px;
+  width:24px; height:24px;
+  border-radius:50%;
+  background:#fff;
+  transition:0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.toggle input:checked + .toggle-slider {
+  background: var(--accent);
+}
+.toggle input:checked + .toggle-slider::before {
+  transform:translateX(22px);
+}
+
+/* ── Progress ── */
+.progress-bar-wrapper {
+  width:100%; height:6px;
+  background: var(--border);
+  border-radius:3px;
+  overflow:hidden;
+  margin-top:8px;
+}
+.progress-bar-fill {
+  height:100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  border-radius:3px;
+  transition:width 0.6s ease;
+  position: relative;
+}
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 2s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.stats-grid {
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:12px;
+  margin-bottom:20px;
+}
+.stat-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding:22px;
+  text-align:center;
+  border:1px solid var(--border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  opacity: 0.5;
+  border-radius: var(--radius-md);
+  z-index: 0;
+}
+.stat-card:nth-child(1)::before { background: linear-gradient(135deg, rgba(255,140,97,0.08), rgba(255,209,102,0.06)); }
+.stat-card:nth-child(2)::before { background: linear-gradient(135deg, rgba(110,198,255,0.08), rgba(123,198,126,0.06)); }
+.stat-card:nth-child(3)::before { background: linear-gradient(135deg, rgba(176,136,255,0.08), rgba(110,198,255,0.06)); }
+.stat-card:nth-child(4)::before { background: linear-gradient(135deg, rgba(255,209,102,0.08), rgba(255,140,97,0.06)); }
+.stat-card > * { position: relative; z-index: 1; }
+.stat-card:hover { transform:translateY(-2px); box-shadow: var(--shadow-sm); }
+.stat-number {
+  font-size:2rem; font-weight:800;
+  color: var(--accent);
+  font-family: var(--font-heading);
+}
+.stat-label {
+  font-size:0.8rem;
+  color: var(--text-secondary);
+  margin-top:4px;
+}
+
+/* ── Bottom Nav ── */
+.bottom-nav {
+  position:fixed; bottom:0; left:0; right:0; z-index:100;
+  height: var(--nav-height);
+  background: var(--bg-nav);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: none;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.06);
+  display:flex; align-items:center; justify-content:space-around;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.nav-item {
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  padding:10px 18px;
+  background:none; border:none;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: var(--font-th);
+  font-size:0.72rem; font-weight:600;
+  cursor:pointer; transition: color 0.25s ease, background 0.25s ease;
+  -webkit-tap-highlight-color:transparent;
+  position:relative;
+}
+.nav-item svg { width:24px; height:24px; transition:transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.nav-item.active {
+  color: var(--accent);
+  background: var(--accent-bg);
+  font-weight:700;
+}
+.nav-item.active svg { transform:scale(1.12); }
+.nav-item.nav-bounce svg {
+  animation: navBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes navBounce {
+  0% { transform:scale(1); }
+  30% { transform:scale(0.8) translateY(3px); }
+  60% { transform:scale(1.2) translateY(-3px); }
+  100% { transform:scale(1.12) translateY(0); }
+}
+.nav-item::after {
+  content:'';
+  position:absolute; top:2px; left:50%; transform:translateX(-50%);
+  width:0; height:3px;
+  background: var(--accent);
+  border-radius:0 0 3px 3px;
+  transition:width 0.3s;
+}
+.nav-item.active::after { width:24px; }
+
+/* ── Section Title ── */
+.section-title {
+  font-family: var(--font-heading);
+  font-size:1.35rem; font-weight:800;
+  margin-bottom:18px;
+  display:flex; align-items:center; gap:8px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent-bg);
+}
+
+.section-subtitle {
+  font-size:0.88rem;
+  color: var(--text-secondary);
+  margin-bottom:20px;
+}
+
+/* ── Filter chips ── */
+.filter-chips {
+  display:flex; gap:8px;
+  margin-bottom:16px;
+  overflow-x:auto;
+  padding-bottom:4px;
+  -ms-overflow-style:none;
+  scrollbar-width:none;
+}
+.filter-chips::-webkit-scrollbar { display:none; }
+
+.chip {
+  padding:10px 20px;
+  border-radius: var(--radius-full);
+  border:1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-family: var(--font-th);
+  font-size:0.85rem; font-weight:500;
+  cursor:pointer; white-space:nowrap;
+  transition: all 0.2s ease;
+  min-height:40px;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+.chip.active {
+  background: var(--accent);
+  color:#fff;
+  border-color: var(--accent);
+  box-shadow: 0 2px 10px rgba(255,140,97,0.25);
+}
+
+/* ── Reading section grammar/vocab tabs ── */
+.reading-tabs {
+  display:flex; gap:0; margin-bottom:16px;
+  background: var(--bg-card);
+  border-radius: var(--radius-full);
+  padding:4px;
+  border:1px solid var(--border);
+}
+.reading-tab {
+  flex:1; padding:12px;
+  min-height:44px;
+  border:none; border-radius: var(--radius-full);
+  background:none;
+  color: var(--text-secondary);
+  font-family: var(--font-th);
+  font-size:0.9rem; font-weight:600;
+  cursor:pointer; transition: all 0.25s ease;
+  text-align:center;
+}
+.reading-tab:hover:not(.active) { background: var(--accent-bg); }
+.reading-tab.active {
+  background: var(--accent);
+  color:#fff;
+  box-shadow: 0 2px 10px rgba(255,140,97,0.3);
+}
+
+/* ── Responsive ── */
+@media (min-width:600px) {
+  .app-content { max-width:560px; margin:0 auto; }
+  .word-popup { border-radius: 28px; margin-bottom:40px; }
+  .word-popup-overlay { align-items:center; }
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius:2px; opacity:0.3; }
+
+/* ── Welcome banner ── */
+.welcome-banner {
+  background: linear-gradient(135deg, #FFB088 0%, #FF8C61 50%, #FFD166 100%);
+  border-radius: var(--radius-lg);
+  padding:30px 26px;
+  margin-bottom:16px;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.welcome-banner::after {
+  content:'';
+  position:absolute; right:-30px; bottom:-30px;
+  width:140px; height:140px;
+  background:rgba(255,255,255,0.12);
+  border-radius:50%;
+}
+.welcome-banner h2 {
+  font-family: var(--font-heading);
+  font-size:1.45rem; font-weight:800; margin-bottom:8px;
+}
+.welcome-banner p {
+  opacity:0.92; font-size:0.9rem; line-height:1.6;
+}
+.welcome-mascot {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  animation: mascotWave 2s ease-in-out infinite;
+}
+@keyframes mascotWave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg) translateY(-2px); }
+  75% { transform: rotate(-5deg) translateY(-2px); }
+}
+.welcome-text { flex: 1; }
+
+/* ── Streak Widget ── */
+.streak-widget {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.streak-fire {
+  font-size: 2rem;
+  line-height: 1;
+}
+.streak-fire.active {
+  animation: firePulse 1.2s ease-in-out infinite;
+}
+@keyframes firePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+.streak-info {
+  flex: 1;
+}
+.streak-info .streak-text {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.streak-info .streak-sub {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.streak-ring {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+.streak-ring svg {
+  width: 44px;
+  height: 44px;
+  transform: rotate(-90deg);
+}
+.streak-ring-bg {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 4;
+}
+.streak-ring-fill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+.streak-ring-text {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-family: var(--font-heading);
+}
+
+/* ── Reset button ── */
+.btn-danger {
+  padding:14px 24px;
+  min-height:48px;
+  background:rgba(231,76,60,0.08);
+  color:#e74c3c;
+  border:1px solid rgba(231,76,60,0.18);
+  border-radius: 16px;
+  font-family: var(--font-th);
+  font-size:0.9rem; font-weight:600;
+  cursor:pointer;
+  transition: all 0.2s ease;
+  width:100%;
+}
+.btn-danger:hover { background:rgba(231,76,60,0.14); transform:scale(1.02); }
+
+/* ── Speaker Button ── */
+.speak-btn {
+  background: var(--accent);
+  border:none;
+  color:#fff;
+  border-radius:50%;
+  width:44px; height:44px;
+  font-size:20px;
+  cursor:pointer;
+  flex-shrink:0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 3px 12px rgba(255,140,97,0.3);
+  display:flex; align-items:center; justify-content:center;
+}
+.speak-btn:hover { transform:scale(1.08); box-shadow: 0 4px 16px rgba(255,140,97,0.4); }
+.speak-btn:active { animation: bounceClick 0.4s ease; }
+
+@keyframes bounceClick {
+  0% { transform:scale(1); }
+  30% { transform:scale(0.85); }
+  60% { transform:scale(1.12); }
+  100% { transform:scale(1); }
+}
+
+/* ── Card level-border via JS-generated classes ── */
+.card-level-easy { border-left-color: #7BC67E !important; }
+.card-level-medium { border-left-color: #FFD166 !important; }
+.card-level-hard { border-left-color: #FF8C61 !important; }
+
+/* ── Sparkle animation for learned words ── */
+@keyframes sparkle {
+  0% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
+  100% { opacity: 0; transform: scale(0) rotate(360deg); }
+}
+.vocab-word.just-learned::after {
+  content: '';
+  position: absolute;
+  top: -4px; right: -4px;
+  width: 8px; height: 8px;
+  background: var(--warning);
+  border-radius: 50%;
+  animation: sparkle 0.6s ease forwards;
+  pointer-events: none;
+}
+.vocab-word.just-learned::before {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: -4px;
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: sparkle 0.6s ease 0.15s forwards;
+  pointer-events: none;
+}
+
+/* ── Celebration Overlay ── */
+.celebration-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.celebration-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.celebration-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 40px 32px;
+  text-align: center;
+  max-width: 320px;
+  box-shadow: var(--shadow-lg);
+  animation: celebBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes celebBounce {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.celebration-card .celeb-mascot {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 16px;
+}
+.celebration-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.celebration-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* ── Confetti ── */
+.confetti-container {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 301;
+  overflow: hidden;
+}
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: -10px;
+  opacity: 0;
+}
+.confetti-piece.active {
+  animation: confettiFall 2.5s ease-in forwards;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+.empty-state .empty-mascot {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 12px;
+  opacity: 0.7;
+}
+.empty-state p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* ── Streak encouragement in settings ── */
+.streak-encouragement {
+  background: var(--accent-bg);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-top: 12px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ── Reset feedback message ── */
+.reset-feedback {
+  background: rgba(123,198,126,0.1);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-top: 12px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--success);
+  font-weight: 600;
+  display: none;
+}
+.reset-feedback.show {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ Header ═══ -->
+<header class="app-header">
+  <div class="app-logo">
+    <svg viewBox="0 0 32 32" fill="none">
+      <rect width="32" height="32" rx="8" fill="currentColor"/>
+      <text x="16" y="23" font-size="20" text-anchor="middle" fill="white" font-family="Inter,sans-serif" font-weight="700">E</text>
+    </svg>
+    EngLingo
+  </div>
+  <div class="header-actions">
+    <button class="btn-icon" id="themeToggle" aria-label="Toggle theme">
+      <span id="themeIcon">🌙</span>
+    </button>
+  </div>
+</header>
+
+<!-- ═══ Page: Reading List ═══ -->
+<main class="app-content">
+  <div class="page active" id="pageRead">
+    <div class="welcome-banner" id="welcomeBanner">
+      <svg class="welcome-mascot" viewBox="0 0 72 72" fill="none" id="mascotWave">
+        <!-- Owl body -->
+        <ellipse cx="36" cy="44" rx="22" ry="24" fill="#FF8C61"/>
+        <!-- Inner belly -->
+        <ellipse cx="36" cy="50" rx="14" ry="16" fill="#FFF3E8"/>
+        <!-- Left eye circle -->
+        <circle cx="28" cy="34" r="10" fill="white"/>
+        <!-- Right eye circle -->
+        <circle cx="44" cy="34" r="10" fill="white"/>
+        <!-- Left pupil -->
+        <circle cx="29" cy="35" r="5" fill="#3D3D4E"/>
+        <!-- Right pupil -->
+        <circle cx="45" cy="35" r="5" fill="#3D3D4E"/>
+        <!-- Left eye shine -->
+        <circle cx="27" cy="33" r="2" fill="white"/>
+        <!-- Right eye shine -->
+        <circle cx="43" cy="33" r="2" fill="white"/>
+        <!-- Beak -->
+        <polygon points="36,40 33,44 39,44" fill="#FFD166"/>
+        <!-- Left ear tuft -->
+        <polygon points="20,18 24,28 16,26" fill="#FF8C61"/>
+        <!-- Right ear tuft -->
+        <polygon points="52,18 48,28 56,26" fill="#FF8C61"/>
+        <!-- Left wing (waving) -->
+        <ellipse cx="14" cy="44" rx="6" ry="12" fill="#FFB088" transform="rotate(-15 14 44)">
+          <animateTransform attributeName="transform" type="rotate" values="-15 14 44;5 14 44;-15 14 44" dur="1.5s" repeatCount="indefinite"/>
+        </ellipse>
+        <!-- Right wing -->
+        <ellipse cx="58" cy="46" rx="6" ry="12" fill="#FFB088" transform="rotate(10 58 46)"/>
+        <!-- Feet -->
+        <ellipse cx="30" cy="67" rx="5" ry="3" fill="#FFD166"/>
+        <ellipse cx="42" cy="67" rx="5" ry="3" fill="#FFD166"/>
+      </svg>
+      <div class="welcome-text">
+        <h2 id="welcomeMessage">สวัสดี! พร้อมเรียนรู้วันนี้</h2>
+        <p>เลือกบทอ่านแล้วแตะคำศัพท์เพื่อดูความหมาย</p>
+      </div>
+    </div>
+
+    <!-- Streak Widget -->
+    <div class="streak-widget" id="streakWidget">
+      <div class="streak-fire" id="streakFire">🔥</div>
+      <div class="streak-info">
+        <div class="streak-text" id="streakText">0 วันติดต่อกัน</div>
+        <div class="streak-sub" id="streakSub">เริ่มเรียนวันนี้เลย!</div>
+      </div>
+      <div class="streak-ring">
+        <svg viewBox="0 0 44 44">
+          <circle class="streak-ring-bg" cx="22" cy="22" r="18"/>
+          <circle class="streak-ring-fill" id="streakRingFill" cx="22" cy="22" r="18"
+            stroke-dasharray="113.1" stroke-dashoffset="113.1"/>
+        </svg>
+        <div class="streak-ring-text" id="streakRingText">0%</div>
+      </div>
+    </div>
+
+    <div class="section-title">📖 บทอ่าน</div>
+    <div class="filter-chips">
+      <button class="chip active" data-filter="all">ทั้งหมด</button>
+      <button class="chip" data-filter="easy">ง่าย</button>
+      <button class="chip" data-filter="medium">ปานกลาง</button>
+      <button class="chip" data-filter="hard">ยาก</button>
+    </div>
+    <div id="passageList"></div>
+  </div>
+
+  <!-- ═══ Page: Reading Detail ═══ -->
+  <div class="page" id="pageReadDetail">
+    <button class="back-btn" id="backToList">← กลับ</button>
+    <div class="reading-header">
+      <div class="reading-title" id="readingTitle"></div>
+      <div class="reading-subtitle" id="readingSubtitle"></div>
+    </div>
+
+    <button class="toggle-translation" id="toggleThai">
+      <span class="toggle-icon">🇹🇭</span> แสดงคำแปลภาษาไทย
+    </button>
+
+    <div class="reading-passage" id="readingPassage"></div>
+    <div class="thai-translation" id="thaiTranslation"></div>
+
+    <div class="reading-tabs">
+      <button class="reading-tab active" data-tab="vocab">📝 คำศัพท์</button>
+      <button class="reading-tab" data-tab="grammar">📐 Grammar</button>
+    </div>
+
+    <div id="readingVocabSection"></div>
+    <div id="readingGrammarSection" style="display:none"></div>
+  </div>
+
+  <!-- ═══ Page: Vocab ═══ -->
+  <div class="page" id="pageVocab">
+    <div class="section-title">📝 คำศัพท์ทั้งหมด</div>
+    <div class="section-subtitle">แตะคำศัพท์เพื่อดูความหมายและตัวอย่างประโยค</div>
+    <div class="search-wrapper">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="vocab-search" id="vocabSearch" placeholder="ค้นหาคำศัพท์...">
+    </div>
+    <div id="vocabListAll"></div>
+  </div>
+
+  <!-- ═══ Page: Grammar ═══ -->
+  <div class="page" id="pageGrammar">
+    <div class="section-title">📐 ไวยากรณ์</div>
+    <div class="section-subtitle">เรียนรู้หลักไวยากรณ์จากบทอ่าน อธิบายง่ายๆ เข้าใจได้ทันที</div>
+    <div class="filter-chips" id="grammarFilters">
+      <button class="chip active" data-filter="all">ทั้งหมด</button>
+    </div>
+    <div id="grammarListAll"></div>
+  </div>
+
+  <!-- ═══ Page: Settings ═══ -->
+  <div class="page" id="pageSettings">
+    <div class="section-title">⚙️ ตั้งค่า</div>
+
+    <div class="settings-group">
+      <div class="settings-group-title">สถิติการเรียน</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="statWords">0</div>
+          <div class="stat-label">คำศัพท์ที่เรียนแล้ว</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statPassages">0</div>
+          <div class="stat-label">บทอ่านที่อ่านแล้ว</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statGrammar">0</div>
+          <div class="stat-label">ไวยากรณ์ที่เรียน</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="statStreak">0</div>
+          <div class="stat-label">วันติดต่อกัน</div>
+        </div>
+      </div>
+      <div class="streak-encouragement" id="streakEncouragement" style="display:none"></div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-group-title">ธีม</div>
+      <div class="setting-item">
+        <div class="setting-label">
+          <div class="setting-icon">🌙</div>
+          <span>โหมดกลางคืน</span>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="darkModeToggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-group-title">ข้อมูล</div>
+      <div class="setting-item">
+        <div class="setting-label">
+          <div class="setting-icon">📱</div>
+          <span>เวอร์ชัน</span>
+        </div>
+        <span style="color:var(--text-muted);font-size:0.9rem">1.1.0</span>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-group-title">รีเซ็ต</div>
+      <button class="btn-danger" id="resetProgress">🗑️ ล้างข้อมูลการเรียนทั้งหมด</button>
+      <div class="reset-feedback" id="resetFeedback">เริ่มต้นใหม่ก็ได้นะ ไม่เป็นไร~ 🌱</div>
+    </div>
+  </div>
+</main>
+
+<!-- ═══ Word Popup ═══ -->
+<div class="word-popup-overlay" id="wordPopup">
+  <div class="word-popup">
+    <div class="popup-handle"></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="popup-word" id="popupWord"></div>
+      <button onclick="speakWord()" class="speak-btn" title="ฟังเสียง">🔊</button>
+    </div>
+    <div class="popup-phonetic" id="popupPhonetic"></div>
+    <div class="popup-pos" id="popupPos"></div>
+    <div class="popup-thai" id="popupThai"></div>
+    <div class="popup-section-title">ตัวอย่างประโยค</div>
+    <div id="popupExamples"></div>
+  </div>
+</div>
+
+<!-- ═══ Celebration Overlay ═══ -->
+<div class="celebration-overlay" id="celebrationOverlay">
+  <div class="celebration-card">
+    <svg class="celeb-mascot" viewBox="0 0 80 80" fill="none">
+      <!-- Celebration owl -->
+      <ellipse cx="40" cy="48" rx="24" ry="26" fill="#FF8C61"/>
+      <ellipse cx="40" cy="54" rx="16" ry="18" fill="#FFF3E8"/>
+      <circle cx="32" cy="36" r="10" fill="white"/>
+      <circle cx="48" cy="36" r="10" fill="white"/>
+      <circle cx="33" cy="37" r="5" fill="#3D3D4E"/>
+      <circle cx="49" cy="37" r="5" fill="#3D3D4E"/>
+      <circle cx="31" cy="35" r="2" fill="white"/>
+      <circle cx="47" cy="35" r="2" fill="white"/>
+      <polygon points="40,42 37,46 43,46" fill="#FFD166"/>
+      <!-- Happy mouth -->
+      <path d="M35 50 Q40 54 45 50" stroke="#3D3D4E" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <!-- Star accents -->
+      <polygon points="12,16 14,12 16,16 14,20" fill="#FFD166"/>
+      <polygon points="64,12 66,8 68,12 66,16" fill="#FFD166"/>
+      <polygon points="10,40 12,36 14,40 12,44" fill="#7BC67E"/>
+      <polygon points="68,36 70,32 72,36 70,40" fill="#6EC6FF"/>
+      <!-- Party hat -->
+      <polygon points="40,10 34,26 46,26" fill="#FFD166"/>
+      <circle cx="40" cy="10" r="3" fill="#FF8C61"/>
+    </svg>
+    <h3 id="celebTitle">ยอดเยี่ยมมาก! 🎉</h3>
+    <p id="celebMessage">เรียนครบทุกคำศัพท์ในบทนี้แล้ว!</p>
+  </div>
+</div>
+
+<!-- ═══ Confetti Container ═══ -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+<!-- ═══ Bottom Navigation ═══ -->
+<nav class="bottom-nav">
+  <button class="nav-item active" data-page="pageRead">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+    <span>อ่าน</span>
+  </button>
+  <button class="nav-item" data-page="pageVocab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    <span>คำศัพท์</span>
+  </button>
+  <button class="nav-item" data-page="pageGrammar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    <span>Grammar</span>
+  </button>
+  <button class="nav-item" data-page="pageSettings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <span>ตั้งค่า</span>
+  </button>
+</nav>
+
+<script>
+/* ═══════════════════════════════════════════
+   JS — EngLingo PWA
+   ═══════════════════════════════════════════ */
+
+// ── Content Data ──
+const PASSAGES = [
+  {
+    id: 'daily-routine',
+    title: 'My Daily Routine',
+    titleTh: 'กิจวัตรประจำวันของฉัน',
+    level: 'easy',
+    levelTh: 'ง่าย',
+    desc: 'เรียนรู้คำศัพท์เกี่ยวกับกิจวัตรประจำวัน ฝึก Present Simple Tense',
+    grammar: 'Present Simple',
+    wordCount: 85,
+    text: `I wake up at six o'clock every morning. First, I brush my teeth and take a shower. Then, I get dressed and eat breakfast. I usually have rice with eggs and a glass of milk. After breakfast, I leave my house and walk to the bus stop. The bus arrives at seven thirty. I ride the bus to my office. I work from eight to five every day. During lunch, I eat at a small restaurant near my office. After work, I exercise at the gym for one hour. In the evening, I cook dinner and watch television. I usually go to bed at ten o'clock. I enjoy my simple routine because it keeps me healthy and organized.`,
+    textTh: `ฉันตื่นนอนตอนหกโมงทุกเช้า อย่างแรก ฉันแปรงฟันและอาบน้ำ จากนั้น ฉันแต่งตัวและกินข้าวเช้า ฉันมักจะกินข้าวกับไข่และนมหนึ่งแก้ว หลังอาหารเช้า ฉันออกจากบ้านและเดินไปป้ายรถเมล์ รถเมล์มาถึงตอนเจ็ดโมงครึ่ง ฉันนั่งรถเมล์ไปที่ออฟฟิศ ฉันทำงานตั้งแต่แปดโมงถึงห้าโมงเย็นทุกวัน ตอนเที่ยง ฉันกินข้าวที่ร้านอาหารเล็กๆ ใกล้ออฟฟิศ หลังเลิกงาน ฉันออกกำลังกายที่ยิมหนึ่งชั่วโมง ตอนเย็น ฉันทำอาหารเย็นและดูทีวี ฉันมักจะเข้านอนตอนสี่ทุ่ม ฉันชอบกิจวัตรง่ายๆ ของฉัน เพราะมันช่วยให้ฉันมีสุขภาพดีและเป็นระเบียบ`,
+    vocab: [
+      {
+        word: 'wake up',
+        phonetic: '/weɪk ʌp/',
+        pos: 'phrasal verb',
+        thai: 'ตื่นนอน',
+        examples: [
+          { en: 'I wake up early on weekdays.', th: 'ฉันตื่นเช้าในวันธรรมดา' },
+          { en: 'She wakes up at five to exercise.', th: 'เธอตื่นตอนตีห้าเพื่อออกกำลังกาย' }
+        ]
+      },
+      {
+        word: 'brush',
+        phonetic: '/brʌʃ/',
+        pos: 'verb',
+        thai: 'แปรง',
+        examples: [
+          { en: 'I brush my teeth twice a day.', th: 'ฉันแปรงฟันวันละสองครั้ง' },
+          { en: 'She brushed her hair before going out.', th: 'เธอแปรงผมก่อนออกไปข้างนอก' }
+        ]
+      },
+      {
+        word: 'shower',
+        phonetic: '/ˈʃaʊər/',
+        pos: 'noun',
+        thai: 'การอาบน้ำ (ฝักบัว)',
+        examples: [
+          { en: 'I take a hot shower every morning.', th: 'ฉันอาบน้ำอุ่นทุกเช้า' },
+          { en: 'The shower in the hotel was very nice.', th: 'ฝักบัวในโรงแรมดีมาก' }
+        ]
+      },
+      {
+        word: 'usually',
+        phonetic: '/ˈjuːʒuəli/',
+        pos: 'adverb',
+        thai: 'โดยปกติ, มักจะ',
+        examples: [
+          { en: 'I usually drink coffee in the morning.', th: 'ฉันมักจะดื่มกาแฟตอนเช้า' },
+          { en: 'She usually takes the train to work.', th: 'เธอมักจะนั่งรถไฟไปทำงาน' }
+        ]
+      },
+      {
+        word: 'arrive',
+        phonetic: '/əˈraɪv/',
+        pos: 'verb',
+        thai: 'มาถึง',
+        examples: [
+          { en: 'The train arrives at platform 3.', th: 'รถไฟมาถึงชานชาลาที่ 3' },
+          { en: 'We arrived at the airport two hours early.', th: 'เรามาถึงสนามบินก่อนสองชั่วโมง' }
+        ]
+      },
+      {
+        word: 'exercise',
+        phonetic: '/ˈeksərsaɪz/',
+        pos: 'verb / noun',
+        thai: 'ออกกำลังกาย',
+        examples: [
+          { en: 'I exercise three times a week.', th: 'ฉันออกกำลังกายสัปดาห์ละสามครั้ง' },
+          { en: 'Walking is a good exercise for health.', th: 'การเดินเป็นการออกกำลังกายที่ดีเพื่อสุขภาพ' }
+        ]
+      },
+      {
+        word: 'routine',
+        phonetic: '/ruːˈtiːn/',
+        pos: 'noun',
+        thai: 'กิจวัตร, สิ่งที่ทำเป็นประจำ',
+        examples: [
+          { en: 'Having a morning routine helps me stay productive.', th: 'การมีกิจวัตรตอนเช้าช่วยให้ฉันทำงานได้ดี' },
+          { en: 'His daily routine includes reading for 30 minutes.', th: 'กิจวัตรประจำวันของเขารวมถึงการอ่านหนังสือ 30 นาที' }
+        ]
+      },
+      {
+        word: 'organized',
+        phonetic: '/ˈɔːrɡənaɪzd/',
+        pos: 'adjective',
+        thai: 'เป็นระเบียบ',
+        examples: [
+          { en: 'She keeps her desk very organized.', th: 'เธอจัดโต๊ะให้เป็นระเบียบมาก' },
+          { en: 'An organized schedule saves time.', th: 'ตารางที่เป็นระเบียบช่วยประหยัดเวลา' }
+        ]
+      }
+    ],
+    grammarPoints: [
+      {
+        title: 'Present Simple Tense',
+        titleTh: 'ปัจจุบันกาลแบบง่าย',
+        explain: 'ใช้พูดถึงสิ่งที่เป็นจริงเสมอ สิ่งที่ทำเป็นประจำ หรือนิสัย\n\nเช่น กิจวัตรประจำวัน ตารางเวลาที่แน่นอน ข้อเท็จจริงทั่วไป',
+        formula: 'Subject + Verb (s/es) + Object',
+        examples: [
+          { en: 'I wake up at six o\'clock.', th: 'ฉันตื่นนอนตอนหกโมง (ทำทุกวัน)' },
+          { en: 'She works from eight to five.', th: 'เธอทำงานตั้งแต่แปดโมงถึงห้าโมง (ทุกวัน)' },
+          { en: 'The bus arrives at seven thirty.', th: 'รถเมล์มาถึงตอนเจ็ดโมงครึ่ง (ตามตาราง)' }
+        ]
+      },
+      {
+        title: 'Adverbs of Frequency',
+        titleTh: 'คำวิเศษณ์บอกความถี่',
+        explain: 'ใช้บอกว่าทำสิ่งนั้นบ่อยแค่ไหน วางไว้ก่อนกริยาหลัก แต่หลัง verb to be\n\nเรียงจากมากไปน้อย: always (เสมอ) → usually (มักจะ) → often (บ่อย) → sometimes (บางครั้ง) → rarely (นานๆ ครั้ง) → never (ไม่เคย)',
+        formula: 'Subject + Adverb + Verb',
+        examples: [
+          { en: 'I usually have rice with eggs.', th: 'ฉันมักจะกินข้าวกับไข่' },
+          { en: 'I usually go to bed at ten.', th: 'ฉันมักจะเข้านอนตอนสี่ทุ่ม' }
+        ]
+      },
+      {
+        title: 'Time Expressions',
+        titleTh: 'สำนวนบอกเวลา',
+        explain: 'วลีที่ใช้บอกเวลาในประโยค มักวางไว้ต้นหรือท้ายประโยค\n\nใช้ "at" กับเวลาที่เจาะจง, "in" กับช่วงเวลา (เช้า เย็น), "every" กับสิ่งที่ทำซ้ำ',
+        formula: 'at + เวลา | in the + ช่วงเวลา | every + ช่วงเวลา',
+        examples: [
+          { en: 'I wake up at six o\'clock every morning.', th: 'ฉันตื่นตอนหกโมงทุกเช้า' },
+          { en: 'In the evening, I cook dinner.', th: 'ตอนเย็น ฉันทำอาหาร' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'trip-to-market',
+    title: 'A Trip to the Market',
+    titleTh: 'ไปตลาด',
+    level: 'medium',
+    levelTh: 'ปานกลาง',
+    desc: 'เรียนรู้คำศัพท์เกี่ยวกับการซื้อของ ฝึก Past Simple Tense',
+    grammar: 'Past Simple',
+    wordCount: 110,
+    text: `Last Saturday, I went to the weekend market with my friend Suda. We arrived at nine in the morning. The market was very crowded and noisy, but we enjoyed the atmosphere. First, we walked through the fresh food section. I bought some vegetables, chicken, and a kilogram of shrimp. The vendor gave me a good discount because I purchased a large amount. Then, we moved to the clothing area. Suda tried on several dresses and finally chose a beautiful blue one. It cost only three hundred baht. After shopping, we felt hungry, so we stopped at a food stall. I ordered pad thai and Suda had som tam with sticky rice. The food was delicious and very affordable. We spent the whole morning at the market and returned home around noon. I was tired but happy with all the things I bought. I decided to visit the market again next week.`,
+    textTh: `เสาร์ที่แล้ว ฉันไปตลาดนัดสุดสัปดาห์กับเพื่อนชื่อสุดา เราไปถึงตอนเก้าโมงเช้า ตลาดคนเยอะมากและเสียงดัง แต่เราชอบบรรยากาศ อย่างแรก เราเดินผ่านโซนอาหารสด ฉันซื้อผัก ไก่ และกุ้งหนึ่งกิโลกรัม แม่ค้าลดราคาให้เพราะฉันซื้อเยอะ จากนั้น เราไปโซนเสื้อผ้า สุดาลองชุดหลายตัวและเลือกชุดสีน้ำเงินสวยๆ ตัวหนึ่ง ราคาแค่สามร้อยบาท หลังจากช้อปปิ้ง เราหิว เลยแวะที่แผงขายอาหาร ฉันสั่งผัดไทยและสุดากินส้มตำกับข้าวเหนียว อาหารอร่อยมากและราคาไม่แพง เราใช้เวลาทั้งเช้าที่ตลาดและกลับบ้านตอนเที่ยง ฉันเหนื่อยแต่มีความสุขกับของที่ซื้อมา ฉันตั้งใจจะไปตลาดอีกครั้งอาทิตย์หน้า`,
+    vocab: [
+      {
+        word: 'crowded',
+        phonetic: '/ˈkraʊdɪd/',
+        pos: 'adjective',
+        thai: 'แน่นขนัด, คนเยอะ',
+        examples: [
+          { en: 'The mall is always crowded on weekends.', th: 'ห้างสรรพสินค้าคนแน่นเสมอในวันหยุด' },
+          { en: 'We avoided the crowded street and took a shortcut.', th: 'เราหลีกเลี่ยงถนนที่คนเยอะและไปทางลัด' }
+        ]
+      },
+      {
+        word: 'atmosphere',
+        phonetic: '/ˈætməsfɪr/',
+        pos: 'noun',
+        thai: 'บรรยากาศ',
+        examples: [
+          { en: 'The restaurant has a cozy atmosphere.', th: 'ร้านอาหารมีบรรยากาศอบอุ่น' },
+          { en: 'I love the atmosphere of the night market.', th: 'ฉันชอบบรรยากาศของตลาดกลางคืน' }
+        ]
+      },
+      {
+        word: 'vendor',
+        phonetic: '/ˈvendər/',
+        pos: 'noun',
+        thai: 'พ่อค้า, แม่ค้า, ผู้ขาย',
+        examples: [
+          { en: 'The vendor at the corner sells fresh fruit.', th: 'แม่ค้าที่มุมถนนขายผลไม้สด' },
+          { en: 'Street vendors offer cheaper prices.', th: 'พ่อค้าแม่ค้าริมถนนขายในราคาถูกกว่า' }
+        ]
+      },
+      {
+        word: 'discount',
+        phonetic: '/ˈdɪskaʊnt/',
+        pos: 'noun',
+        thai: 'ส่วนลด',
+        examples: [
+          { en: 'I got a 20% discount on this shirt.', th: 'ฉันได้ส่วนลด 20% สำหรับเสื้อตัวนี้' },
+          { en: 'Many shops offer discounts during the holiday season.', th: 'ร้านค้าหลายแห่งมีส่วนลดในช่วงวันหยุด' }
+        ]
+      },
+      {
+        word: 'purchased',
+        phonetic: '/ˈpɜːrtʃəst/',
+        pos: 'verb (past)',
+        thai: 'ซื้อ (ทางการกว่า bought)',
+        examples: [
+          { en: 'She purchased a new laptop online.', th: 'เธอซื้อแล็ปท็อปเครื่องใหม่ออนไลน์' },
+          { en: 'The items I purchased were on sale.', th: 'ของที่ฉันซื้อมีลดราคา' }
+        ]
+      },
+      {
+        word: 'delicious',
+        phonetic: '/dɪˈlɪʃəs/',
+        pos: 'adjective',
+        thai: 'อร่อย',
+        examples: [
+          { en: 'Thai food is known for being delicious.', th: 'อาหารไทยขึ้นชื่อเรื่องความอร่อย' },
+          { en: 'The cake she made was absolutely delicious.', th: 'เค้กที่เธอทำอร่อยมากๆ' }
+        ]
+      },
+      {
+        word: 'affordable',
+        phonetic: '/əˈfɔːrdəbl/',
+        pos: 'adjective',
+        thai: 'ราคาไม่แพง, จ่ายไหว',
+        examples: [
+          { en: 'This phone is powerful and affordable.', th: 'โทรศัพท์เครื่องนี้สเปคดีและราคาไม่แพง' },
+          { en: 'The hostel offers affordable rooms for travelers.', th: 'โฮสเทลมีห้องราคาไม่แพงสำหรับนักเดินทาง' }
+        ]
+      },
+      {
+        word: 'decided',
+        phonetic: '/dɪˈsaɪdɪd/',
+        pos: 'verb (past)',
+        thai: 'ตัดสินใจ',
+        examples: [
+          { en: 'We decided to eat out tonight.', th: 'เราตัดสินใจไปกินข้างนอกคืนนี้' },
+          { en: 'He decided to change his career.', th: 'เขาตัดสินใจเปลี่ยนอาชีพ' }
+        ]
+      }
+    ],
+    grammarPoints: [
+      {
+        title: 'Past Simple Tense',
+        titleTh: 'อดีตกาลแบบง่าย',
+        explain: 'ใช้พูดถึงสิ่งที่เกิดขึ้นแล้วในอดีต และจบไปแล้ว มักมีคำบอกเวลาในอดีต เช่น yesterday, last week, ago\n\nกริยาปกติ: เติม -ed (walked, arrived)\nกริยาไม่ปกติ: ต้องจำเป็นคำๆ ไป (went, bought, ate)',
+        formula: 'Subject + Verb (past form) + Object',
+        examples: [
+          { en: 'I went to the market last Saturday.', th: 'ฉันไปตลาดเมื่อวันเสาร์ที่แล้ว' },
+          { en: 'She bought a beautiful dress.', th: 'เธอซื้อชุดสวยๆ ตัวหนึ่ง' },
+          { en: 'We arrived at nine in the morning.', th: 'เราไปถึงตอนเก้าโมงเช้า' }
+        ]
+      },
+      {
+        title: 'Past Simple — Irregular Verbs',
+        titleTh: 'กริยาไม่ปกติในอดีตกาล',
+        explain: 'กริยาไม่ปกติ (irregular verbs) ไม่ได้เติม -ed แต่เปลี่ยนรูปไปเลย ต้องจำ\n\ngo → went | buy → bought | eat → ate | feel → felt | spend → spent | choose → chose | have → had | give → gave',
+        formula: 'ท่อง: V1 → V2 → V3',
+        examples: [
+          { en: 'We went to the market. (go → went)', th: 'เราไปตลาด' },
+          { en: 'I bought some vegetables. (buy → bought)', th: 'ฉันซื้อผักบ้าง' },
+          { en: 'We spent the whole morning there. (spend → spent)', th: 'เราใช้เวลาทั้งเช้าที่นั่น' }
+        ]
+      },
+      {
+        title: 'Linking with "so" and "because"',
+        titleTh: 'การเชื่อมประโยคด้วย "so" และ "because"',
+        explain: '"because" = เพราะว่า (บอกเหตุผล)\n"so" = เลย, ดังนั้น (บอกผลลัพธ์)\n\nทั้งสองคำเชื่อม 2 ประโยคเข้าด้วยกัน ทำให้เขียนได้ดูเป็นธรรมชาติมากขึ้น',
+        formula: 'เหตุ + so + ผล | ผล + because + เหตุ',
+        examples: [
+          { en: 'We felt hungry, so we stopped at a food stall.', th: 'เราหิว เลยแวะที่แผงขายอาหาร' },
+          { en: 'The vendor gave me a discount because I bought a lot.', th: 'แม่ค้าลดราคาให้เพราะฉันซื้อเยอะ' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'future-of-technology',
+    title: 'The Future of Technology',
+    titleTh: 'อนาคตของเทคโนโลยี',
+    level: 'hard',
+    levelTh: 'ยาก',
+    desc: 'เรียนรู้คำศัพท์เกี่ยวกับเทคโนโลยี ฝึก Mixed Tenses และ Conditionals',
+    grammar: 'Mixed Tenses + Conditionals',
+    wordCount: 130,
+    text: `Technology has changed our lives dramatically over the past few decades. Twenty years ago, most people did not have smartphones. Today, almost everyone carries a powerful computer in their pocket. We use it to communicate, shop, learn, and even manage our health. Artificial intelligence is now becoming a part of everyday life. Smart assistants can answer questions, translate languages, and control home devices. Some experts believe that AI will transform the way we work within the next ten years. If machines can perform routine tasks, humans will have more time for creative work. However, not everyone is optimistic about these changes. Some people worry that technology will replace many jobs. If companies adopt automation too quickly, millions of workers could lose their employment. Education systems will need to adapt by teaching new skills such as programming, critical thinking, and digital literacy. Despite these challenges, technology continues to advance rapidly. If we use it wisely, it can solve many of the world's biggest problems, from climate change to healthcare. The key is to embrace innovation while ensuring that no one is left behind.`,
+    textTh: `เทคโนโลยีได้เปลี่ยนแปลงชีวิตเราอย่างมากในช่วงหลายทศวรรษที่ผ่านมา เมื่อยี่สิบปีก่อน คนส่วนใหญ่ไม่มีสมาร์ทโฟน ทุกวันนี้ เกือบทุกคนพกคอมพิวเตอร์ที่ทรงพลังอยู่ในกระเป๋า เราใช้มันเพื่อสื่อสาร ช้อปปิ้ง เรียนรู้ และแม้แต่ดูแลสุขภาพ ปัญญาประดิษฐ์กำลังกลายเป็นส่วนหนึ่งของชีวิตประจำวัน ผู้ช่วยอัจฉริยะสามารถตอบคำถาม แปลภาษา และควบคุมอุปกรณ์ในบ้าน ผู้เชี่ยวชาญบางคนเชื่อว่า AI จะเปลี่ยนแปลงวิธีการทำงานของเราภายในสิบปีข้างหน้า ถ้าเครื่องจักรสามารถทำงานทั่วไปได้ มนุษย์จะมีเวลามากขึ้นสำหรับงานสร้างสรรค์ อย่างไรก็ตาม ไม่ใช่ทุกคนที่มองโลกในแง่ดีเกี่ยวกับการเปลี่ยนแปลงเหล่านี้ บางคนกังวลว่าเทคโนโลยีจะมาแทนที่งานหลายอย่าง ถ้าบริษัทนำระบบอัตโนมัติมาใช้เร็วเกินไป พนักงานหลายล้านคนอาจตกงาน ระบบการศึกษาจะต้องปรับตัวด้วยการสอนทักษะใหม่ เช่น การเขียนโปรแกรม การคิดเชิงวิเคราะห์ และความรู้ด้านดิจิทัล แม้จะมีความท้าทายเหล่านี้ เทคโนโลยียังคงก้าวหน้าอย่างรวดเร็ว ถ้าเราใช้มันอย่างฉลาด มันสามารถแก้ปัญหาใหญ่ที่สุดของโลกได้ ตั้งแต่การเปลี่ยนแปลงสภาพภูมิอากาศไปจนถึงการดูแลสุขภาพ กุญแจสำคัญคือการยอมรับนวัตกรรมพร้อมกับทำให้แน่ใจว่าไม่มีใครถูกทิ้งไว้ข้างหลัง`,
+    vocab: [
+      {
+        word: 'dramatically',
+        phonetic: '/drəˈmætɪkli/',
+        pos: 'adverb',
+        thai: 'อย่างมาก, อย่างเห็นได้ชัด',
+        examples: [
+          { en: 'The weather changed dramatically overnight.', th: 'สภาพอากาศเปลี่ยนแปลงอย่างมากข้ามคืน' },
+          { en: 'His grades improved dramatically this semester.', th: 'เกรดของเขาดีขึ้นอย่างเห็นได้ชัดเทอมนี้' }
+        ]
+      },
+      {
+        word: 'artificial intelligence',
+        phonetic: '/ˌɑːrtɪˈfɪʃl ɪnˈtelɪdʒəns/',
+        pos: 'noun',
+        thai: 'ปัญญาประดิษฐ์ (AI)',
+        examples: [
+          { en: 'Artificial intelligence is used in many apps today.', th: 'ปัญญาประดิษฐ์ถูกใช้ในแอปหลายตัวในปัจจุบัน' },
+          { en: 'AI can help doctors diagnose diseases faster.', th: 'AI สามารถช่วยหมอวินิจฉัยโรคได้เร็วขึ้น' }
+        ]
+      },
+      {
+        word: 'transform',
+        phonetic: '/trænsˈfɔːrm/',
+        pos: 'verb',
+        thai: 'เปลี่ยนแปลงอย่างสิ้นเชิง',
+        examples: [
+          { en: 'The internet has transformed the way we communicate.', th: 'อินเทอร์เน็ตเปลี่ยนแปลงวิธีที่เราสื่อสารอย่างสิ้นเชิง' },
+          { en: 'Exercise can transform your health.', th: 'การออกกำลังกายสามารถเปลี่ยนแปลงสุขภาพของคุณได้อย่างมาก' }
+        ]
+      },
+      {
+        word: 'optimistic',
+        phonetic: '/ˌɑːptɪˈmɪstɪk/',
+        pos: 'adjective',
+        thai: 'มองโลกในแง่ดี',
+        examples: [
+          { en: 'She is optimistic about the future.', th: 'เธอมองโลกในแง่ดีเกี่ยวกับอนาคต' },
+          { en: 'Despite the problems, he remained optimistic.', th: 'แม้จะมีปัญหา เขาก็ยังมองโลกในแง่ดี' }
+        ]
+      },
+      {
+        word: 'automation',
+        phonetic: '/ˌɔːtəˈmeɪʃn/',
+        pos: 'noun',
+        thai: 'ระบบอัตโนมัติ',
+        examples: [
+          { en: 'Factory automation has increased production speed.', th: 'ระบบอัตโนมัติในโรงงานเพิ่มความเร็วในการผลิต' },
+          { en: 'Automation can reduce human errors.', th: 'ระบบอัตโนมัติสามารถลดข้อผิดพลาดของมนุษย์' }
+        ]
+      },
+      {
+        word: 'employment',
+        phonetic: '/ɪmˈplɔɪmənt/',
+        pos: 'noun',
+        thai: 'การจ้างงาน, งาน',
+        examples: [
+          { en: 'The government is working to increase employment.', th: 'รัฐบาลกำลังทำงานเพื่อเพิ่มการจ้างงาน' },
+          { en: 'She found employment at a tech company.', th: 'เธอได้งานที่บริษัทเทคโนโลยี' }
+        ]
+      },
+      {
+        word: 'adapt',
+        phonetic: '/əˈdæpt/',
+        pos: 'verb',
+        thai: 'ปรับตัว',
+        examples: [
+          { en: 'Animals adapt to survive in different environments.', th: 'สัตว์ปรับตัวเพื่ออยู่รอดในสภาพแวดล้อมต่างๆ' },
+          { en: 'We need to adapt to new technology quickly.', th: 'เราต้องปรับตัวกับเทคโนโลยีใหม่ให้เร็ว' }
+        ]
+      },
+      {
+        word: 'innovation',
+        phonetic: '/ˌɪnəˈveɪʃn/',
+        pos: 'noun',
+        thai: 'นวัตกรรม, สิ่งใหม่ที่สร้างขึ้น',
+        examples: [
+          { en: 'Innovation drives economic growth.', th: 'นวัตกรรมขับเคลื่อนการเติบโตทางเศรษฐกิจ' },
+          { en: 'Thailand is investing more in innovation.', th: 'ประเทศไทยลงทุนในด้านนวัตกรรมมากขึ้น' }
+        ]
+      },
+      {
+        word: 'embrace',
+        phonetic: '/ɪmˈbreɪs/',
+        pos: 'verb',
+        thai: 'ยอมรับ, โอบรับ',
+        examples: [
+          { en: 'We should embrace change, not fear it.', th: 'เราควรยอมรับการเปลี่ยนแปลง ไม่ใช่กลัวมัน' },
+          { en: 'The company embraced remote work during the pandemic.', th: 'บริษัทยอมรับการทำงานจากที่บ้านในช่วงโรคระบาด' }
+        ]
+      }
+    ],
+    grammarPoints: [
+      {
+        title: 'Present Perfect Tense',
+        titleTh: 'ปัจจุบันกาลสมบูรณ์',
+        explain: 'ใช้พูดถึงสิ่งที่เกิดขึ้นในอดีตแต่ยังเกี่ยวข้องกับปัจจุบัน หรือสิ่งที่เริ่มในอดีตแล้วยังดำเนินอยู่\n\nมักใช้กับ: since, for, already, yet, just, ever, never',
+        formula: 'Subject + has/have + Verb (past participle)',
+        examples: [
+          { en: 'Technology has changed our lives dramatically.', th: 'เทคโนโลยีเปลี่ยนแปลงชีวิตเราอย่างมาก (และยังเปลี่ยนอยู่)' },
+          { en: 'AI has become a part of everyday life.', th: 'AI กลายเป็นส่วนหนึ่งของชีวิตประจำวัน (ตั้งแต่ก่อนจนถึงตอนนี้)' }
+        ]
+      },
+      {
+        title: 'First Conditional (If + will)',
+        titleTh: 'ประโยคเงื่อนไขแบบที่ 1',
+        explain: 'ใช้พูดถึงสิ่งที่เป็นไปได้ในอนาคต ถ้าเงื่อนไขเป็นจริง\n\n"ถ้า...จะ..." — ใช้เมื่อเราคิดว่ามีโอกาสเกิดขึ้นจริง\nในส่วน if ใช้ Present Simple, ในส่วนผลลัพธ์ใช้ will + Verb',
+        formula: 'If + Subject + Verb (present), Subject + will + Verb',
+        examples: [
+          { en: 'If machines can perform routine tasks, humans will have more time.', th: 'ถ้าเครื่องจักรทำงานทั่วไปได้ มนุษย์จะมีเวลามากขึ้น' },
+          { en: 'If we use technology wisely, it can solve big problems.', th: 'ถ้าเราใช้เทคโนโลยีอย่างฉลาด มันจะแก้ปัญหาใหญ่ได้' }
+        ]
+      },
+      {
+        title: 'Second Conditional (If + would/could)',
+        titleTh: 'ประโยคเงื่อนไขแบบที่ 2',
+        explain: 'ใช้พูดถึงสถานการณ์สมมติที่ไม่น่าจะเกิดขึ้น หรือจินตนาการ\n\n"ถ้า...ก็จะ..." — แต่ความจริงไม่ได้เป็นแบบนั้น\nในส่วน if ใช้ Past Simple, ในส่วนผลลัพธ์ใช้ would/could + Verb',
+        formula: 'If + Subject + Verb (past), Subject + would/could + Verb',
+        examples: [
+          { en: 'If companies adopted automation too quickly, workers could lose jobs.', th: 'ถ้าบริษัทนำระบบอัตโนมัติมาใช้เร็วเกินไป พนักงานอาจตกงาน' },
+          { en: 'If I had more time, I would learn programming.', th: 'ถ้าฉันมีเวลามากกว่านี้ ฉันจะเรียนเขียนโปรแกรม' }
+        ]
+      }
+    ]
+  }
+];
+
+// ── Motivational Messages ──
+const WELCOME_MESSAGES = [
+  { text: 'วันนี้เราเรียนรู้อะไรดีนะ?', emoji: '🌟' },
+  { text: 'มาฝึกภาษากันเถอะ!', emoji: '💪' },
+  { text: 'ทุกคำที่เรียนคือก้าวข้างหน้า', emoji: '🚀' },
+  { text: 'เก่งขึ้นทุกวัน! วันนี้ลุยเลย', emoji: '🔥' },
+  { text: 'น้อง Engi รอเรียนด้วยกันอยู่นะ', emoji: '🦉' },
+  { text: 'ภาษาอังกฤษไม่ยาก เรามาทำทีละนิด', emoji: '✨' },
+  { text: 'เปิดโลกกว้างด้วยภาษา!', emoji: '🌍' }
+];
+
+const STREAK_ADJECTIVES = [
+  { min: 1, text: 'เริ่มต้นดีมาก!' },
+  { min: 2, text: 'ไม่หยุด!' },
+  { min: 3, text: 'สุดยอด!' },
+  { min: 5, text: 'เจ๋งมาก!' },
+  { min: 7, text: 'สม่ำเสมอมาก!' },
+  { min: 14, text: 'น่าทึ่ง!' },
+  { min: 30, text: 'ระดับตำนาน!' }
+];
+
+// ── State ──
+const state = {
+  currentPage: 'pageRead',
+  currentPassage: null,
+  activeTab: 'vocab',
+  learnedWords: new Set(),
+  readPassages: new Set(),
+  learnedGrammar: new Set(),
+  streak: 0,
+  lastVisit: null,
+  darkMode: false
+};
+
+// Load state from localStorage
+function loadState() {
+  try {
+    const saved = localStorage.getItem('englingo_state');
+    if (saved) {
+      const d = JSON.parse(saved);
+      if (d.learnedWords) state.learnedWords = new Set(d.learnedWords);
+      if (d.readPassages) state.readPassages = new Set(d.readPassages);
+      if (d.learnedGrammar) state.learnedGrammar = new Set(d.learnedGrammar);
+      state.streak = d.streak || 0;
+      state.lastVisit = d.lastVisit || null;
+      state.darkMode = d.darkMode || false;
+    }
+  } catch(e) {}
+  // Update streak
+  const today = new Date().toDateString();
+  if (state.lastVisit) {
+    const last = new Date(state.lastVisit);
+    const diff = Math.floor((new Date(today) - last) / (1000*60*60*24));
+    if (diff === 1) { state.streak++; }
+    else if (diff > 1) { state.streak = 1; }
+  } else {
+    state.streak = 1;
+  }
+  state.lastVisit = today;
+  saveState();
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('englingo_state', JSON.stringify({
+      learnedWords: [...state.learnedWords],
+      readPassages: [...state.readPassages],
+      learnedGrammar: [...state.learnedGrammar],
+      streak: state.streak,
+      lastVisit: state.lastVisit,
+      darkMode: state.darkMode
+    }));
+  } catch(e) {}
+}
+
+// ── Theme ──
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', state.darkMode ? 'dark' : 'light');
+  document.getElementById('themeIcon').textContent = state.darkMode ? '☀️' : '🌙';
+  document.getElementById('darkModeToggle').checked = state.darkMode;
+  document.querySelector('meta[name="theme-color"]').content = state.darkMode ? '#1E1B2E' : '#FF8C61';
+}
+
+// ── Welcome Message (rotates daily) ──
+function updateWelcomeMessage() {
+  const dayIndex = new Date().getDate() % WELCOME_MESSAGES.length;
+  const msg = WELCOME_MESSAGES[dayIndex];
+  document.getElementById('welcomeMessage').textContent = msg.text + ' ' + msg.emoji;
+}
+
+// ── Streak Widget ──
+function updateStreakWidget() {
+  const fireEl = document.getElementById('streakFire');
+  const textEl = document.getElementById('streakText');
+  const subEl = document.getElementById('streakSub');
+  const ringFill = document.getElementById('streakRingFill');
+  const ringText = document.getElementById('streakRingText');
+
+  // Fire pulse animation
+  if (state.streak > 0) {
+    fireEl.classList.add('active');
+  } else {
+    fireEl.classList.remove('active');
+  }
+
+  // Streak text with adjective
+  const adj = [...STREAK_ADJECTIVES].reverse().find(a => state.streak >= a.min);
+  textEl.textContent = state.streak + ' วันติดต่อกัน' + (adj ? ' — ' + adj.text : '');
+
+  if (state.streak === 0) {
+    subEl.textContent = 'เริ่มเรียนวันนี้เลย!';
+  } else if (state.streak < 3) {
+    subEl.textContent = 'มาสร้าง streak กันต่อ!';
+  } else {
+    subEl.textContent = 'ทำได้ดีมาก อย่าหยุดนะ!';
+  }
+
+  // Progress ring: vocab learned today / total available
+  const totalVocab = new Set();
+  PASSAGES.forEach(p => p.vocab.forEach(v => totalVocab.add(v.word)));
+  const pct = totalVocab.size > 0 ? Math.round((state.learnedWords.size / totalVocab.size) * 100) : 0;
+  const circumference = 2 * Math.PI * 18; // r=18
+  const offset = circumference - (pct / 100) * circumference;
+  ringFill.style.strokeDashoffset = offset;
+  ringText.textContent = pct + '%';
+}
+
+// ── Navigation ──
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navBtn = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+  if (navBtn) {
+    navBtn.classList.add('active');
+    // Add bounce animation
+    navBtn.classList.add('nav-bounce');
+    setTimeout(() => navBtn.classList.remove('nav-bounce'), 500);
+  }
+  state.currentPage = pageId;
+
+  if (pageId === 'pageVocab') renderVocabList();
+  if (pageId === 'pageGrammar') renderGrammarList();
+  if (pageId === 'pageSettings') updateStats();
+  window.scrollTo(0, 0);
+}
+
+// ── Render Passage List ──
+function renderPassageList(filter = 'all') {
+  const container = document.getElementById('passageList');
+  const filtered = filter === 'all' ? PASSAGES : PASSAGES.filter(p => p.level === filter);
+  container.innerHTML = filtered.map(p => {
+    const isRead = state.readPassages.has(p.id);
+    return `
+    <div class="card card-level-${p.level}" onclick="openPassage('${p.id}')">
+      <div class="card-header">
+        <div class="card-title">
+          ${isRead ? '✅' : '📄'} ${p.title}
+        </div>
+        <span class="level-badge level-${p.level}">${p.levelTh}</span>
+      </div>
+      <div class="card-desc">${p.desc}</div>
+      <div class="card-meta">
+        <span>📝 ${p.vocab.length} คำศัพท์</span>
+        <span>📐 ${p.grammarPoints.length} ไวยากรณ์</span>
+        <span>📖 ${p.wordCount} คำ</span>
+      </div>
+      ${isRead ? `
+      <div class="progress-bar-wrapper">
+        <div class="progress-bar-fill" style="width:${getPassageProgress(p)}%"></div>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function getPassageProgress(p) {
+  const vocabLearned = p.vocab.filter(v => state.learnedWords.has(v.word)).length;
+  const grammarLearned = p.grammarPoints.filter(g => state.learnedGrammar.has(g.title)).length;
+  const total = p.vocab.length + p.grammarPoints.length;
+  if (total === 0) return 0;
+  return Math.round((vocabLearned + grammarLearned) / total * 100);
+}
+
+// ── Open Passage ──
+function openPassage(id) {
+  const passage = PASSAGES.find(p => p.id === id);
+  if (!passage) return;
+  state.currentPassage = passage;
+  state.readPassages.add(id);
+  saveState();
+
+  document.getElementById('readingTitle').textContent = passage.title;
+  document.getElementById('readingSubtitle').textContent = `${passage.titleTh} — ${passage.levelTh} — ${passage.grammar}`;
+
+  // Render passage with clickable vocab words
+  let html = passage.text;
+  // Sort vocab by word length desc to handle longer phrases first
+  const sortedVocab = [...passage.vocab].sort((a,b) => b.word.length - a.word.length);
+  sortedVocab.forEach(v => {
+    const regex = new RegExp(`\\b(${v.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})\\b`, 'gi');
+    html = html.replace(regex, `<span class="vocab-word" data-word="${v.word}">$1</span>`);
+  });
+  document.getElementById('readingPassage').innerHTML = html;
+  document.getElementById('thaiTranslation').textContent = passage.textTh;
+  document.getElementById('thaiTranslation').classList.remove('show');
+
+  renderReadingVocab(passage);
+  renderReadingGrammar(passage);
+
+  // Reset tabs
+  state.activeTab = 'vocab';
+  document.querySelectorAll('.reading-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.reading-tab[data-tab="vocab"]').classList.add('active');
+  document.getElementById('readingVocabSection').style.display = '';
+  document.getElementById('readingGrammarSection').style.display = 'none';
+
+  // Reset toggle translation button
+  const toggleBtn = document.getElementById('toggleThai');
+  toggleBtn.classList.remove('active');
+  toggleBtn.innerHTML = '<span class="toggle-icon">🇹🇭</span> แสดงคำแปลภาษาไทย';
+
+  showPage('pageReadDetail');
+}
+
+function renderReadingVocab(passage) {
+  const container = document.getElementById('readingVocabSection');
+  container.innerHTML = passage.vocab.map(v => {
+    const learned = state.learnedWords.has(v.word);
+    return `
+    <div class="vocab-list-item" onclick="showWordPopup('${v.word}', '${passage.id}')">
+      <div class="vocab-item-left">
+        <div class="vocab-item-word">${learned ? '✅' : '📝'} ${v.word}</div>
+        <div class="vocab-item-thai">${v.thai}</div>
+      </div>
+      <div class="vocab-item-arrow">›</div>
+    </div>`;
+  }).join('');
+}
+
+function renderReadingGrammar(passage) {
+  const container = document.getElementById('readingGrammarSection');
+  container.innerHTML = passage.grammarPoints.map(g => {
+    const learned = state.learnedGrammar.has(g.title);
+    return `
+    <div class="grammar-card" onclick="toggleGrammarCard(this, '${g.title}')">
+      <div class="grammar-card-header">
+        <div class="grammar-card-title">${learned ? '✅' : '📐'} ${g.title}</div>
+        <div class="grammar-card-arrow">▼</div>
+      </div>
+      <div class="grammar-card-body">
+        <div class="grammar-explain">${g.explain.replace(/\n/g, '<br>')}</div>
+        <div class="grammar-formula">${g.formula}</div>
+        <div class="popup-section-title">ตัวอย่าง</div>
+        ${g.examples.map(ex => `
+          <div class="example-item">
+            <div class="example-en">${ex.en}</div>
+            <div class="example-th">${ex.th}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleGrammarCard(el, title) {
+  el.classList.toggle('open');
+  if (el.classList.contains('open')) {
+    state.learnedGrammar.add(title);
+    saveState();
+  }
+}
+
+// ── Celebration & Confetti ──
+function checkPassageCompletion(passageId) {
+  const passage = PASSAGES.find(p => p.id === passageId);
+  if (!passage) return;
+  const allLearned = passage.vocab.every(v => state.learnedWords.has(v.word));
+  if (allLearned) {
+    triggerCelebration(passage.title);
+  }
+}
+
+function triggerCelebration(passageTitle) {
+  // Show confetti
+  spawnConfetti();
+  // Show overlay
+  const overlay = document.getElementById('celebrationOverlay');
+  document.getElementById('celebTitle').textContent = 'ยอดเยี่ยมมาก! 🎉';
+  document.getElementById('celebMessage').textContent = `เรียนครบทุกคำศัพท์ในบท "${passageTitle}" แล้ว!`;
+  overlay.classList.add('show');
+  // Auto dismiss after 3s
+  setTimeout(() => {
+    overlay.classList.remove('show');
+  }, 3000);
+  // Click to dismiss
+  overlay.onclick = () => overlay.classList.remove('show');
+}
+
+function spawnConfetti() {
+  const container = document.getElementById('confettiContainer');
+  container.innerHTML = '';
+  const colors = ['#FF8C61', '#FFD166', '#7BC67E', '#6EC6FF', '#FFB088', '#B088FF'];
+  for (let i = 0; i < 40; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.width = (6 + Math.random() * 8) + 'px';
+    piece.style.height = (6 + Math.random() * 8) + 'px';
+    piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    piece.style.animationDelay = (Math.random() * 0.8) + 's';
+    piece.style.animationDuration = (2 + Math.random() * 1.5) + 's';
+    container.appendChild(piece);
+    // Trigger animation
+    requestAnimationFrame(() => piece.classList.add('active'));
+  }
+  // Clean up after animation
+  setTimeout(() => { container.innerHTML = ''; }, 4000);
+}
+
+// ── Word Popup ──
+function showWordPopup(word, passageId) {
+  const passage = passageId ? PASSAGES.find(p => p.id === passageId) : null;
+  let vocab = null;
+
+  if (passage) {
+    vocab = passage.vocab.find(v => v.word.toLowerCase() === word.toLowerCase());
+  }
+  if (!vocab) {
+    for (const p of PASSAGES) {
+      vocab = p.vocab.find(v => v.word.toLowerCase() === word.toLowerCase());
+      if (vocab) break;
+    }
+  }
+  if (!vocab) return;
+
+  const wasAlreadyLearned = state.learnedWords.has(vocab.word);
+
+  document.getElementById('popupWord').textContent = vocab.word;
+  document.getElementById('popupWord').dataset.word = vocab.word;
+  document.getElementById('popupPhonetic').textContent = vocab.phonetic;
+  document.getElementById('popupPos').textContent = vocab.pos;
+  document.getElementById('popupThai').textContent = vocab.thai;
+  document.getElementById('popupExamples').innerHTML = vocab.examples.map(ex => `
+    <div class="example-item">
+      <div class="example-en">${ex.en}</div>
+      <div class="example-th">${ex.th}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('wordPopup').classList.add('show');
+  state.learnedWords.add(vocab.word);
+  saveState();
+
+  // Sparkle effect on vocab word in passage
+  if (!wasAlreadyLearned) {
+    const wordEls = document.querySelectorAll(`.vocab-word[data-word="${vocab.word}"]`);
+    wordEls.forEach(el => {
+      el.classList.add('just-learned');
+      setTimeout(() => el.classList.remove('just-learned'), 700);
+    });
+  }
+
+  // Update UI if on reading detail
+  if (state.currentPassage) {
+    renderReadingVocab(state.currentPassage);
+    // Check if passage is now complete
+    if (!wasAlreadyLearned && passageId) {
+      checkPassageCompletion(passageId);
+    }
+  }
+
+  // Update streak widget
+  updateStreakWidget();
+}
+
+function speakWord() {
+  const word = document.getElementById('popupWord').dataset.word;
+  if (!word) return;
+  const btn = event.currentTarget;
+  btn.textContent = '⏳';
+  const done = () => { btn.textContent = '🔊'; };
+
+  fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(word))
+    .then(r => r.json())
+    .then(data => {
+      const ph = data[0]?.phonetics?.find(p => p.audio);
+      if (ph && ph.audio) {
+        const a = new Audio(ph.audio);
+        a.onended = done;
+        a.onerror = () => fallbackSpeak(word, done);
+        a.play().catch(() => fallbackSpeak(word, done));
+      } else {
+        fallbackSpeak(word, done);
+      }
+    })
+    .catch(() => fallbackSpeak(word, done));
+}
+
+function fallbackSpeak(word, done) {
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(word);
+    u.lang = 'en-US';
+    u.rate = 0.8;
+    u.onend = done;
+    u.onerror = done;
+    window.speechSynthesis.speak(u);
+    setTimeout(done, 3000);
+  } else {
+    done();
+  }
+}
+
+// ── Vocab List (all) ──
+function renderVocabList(searchTerm = '') {
+  const container = document.getElementById('vocabListAll');
+  const allVocab = [];
+  const seen = new Set();
+  PASSAGES.forEach(p => {
+    p.vocab.forEach(v => {
+      if (!seen.has(v.word)) {
+        seen.add(v.word);
+        allVocab.push({ ...v, passageId: p.id, passageTitle: p.title });
+      }
+    });
+  });
+
+  const filtered = searchTerm
+    ? allVocab.filter(v =>
+        v.word.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        v.thai.includes(searchTerm))
+    : allVocab;
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <svg class="empty-mascot" viewBox="0 0 64 64" fill="none">
+          <ellipse cx="32" cy="38" rx="18" ry="20" fill="var(--accent)" opacity="0.3"/>
+          <ellipse cx="32" cy="42" rx="12" ry="14" fill="var(--bg-card)"/>
+          <circle cx="26" cy="32" r="7" fill="var(--bg-card)"/>
+          <circle cx="38" cy="32" r="7" fill="var(--bg-card)"/>
+          <circle cx="27" cy="33" r="3.5" fill="var(--text-muted)"/>
+          <circle cx="39" cy="33" r="3.5" fill="var(--text-muted)"/>
+          <polygon points="32,36 30,39 34,39" fill="var(--warning)"/>
+          <path d="M28 43 Q32 41 36 43" stroke="var(--text-muted)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        </svg>
+        <p>ลองคำอื่นดูนะ~ 🔍</p>
+      </div>`;
+  } else {
+    container.innerHTML = filtered.map(v => {
+      const learned = state.learnedWords.has(v.word);
+      return `
+      <div class="vocab-list-item" onclick="showWordPopup('${v.word}', '${v.passageId}')">
+        <div class="vocab-item-left">
+          <div class="vocab-item-word">${learned ? '✅' : '📝'} ${v.word}</div>
+          <div class="vocab-item-thai">${v.thai} <span style="color:var(--text-muted);font-size:0.75rem">— ${v.passageTitle}</span></div>
+        </div>
+        <div class="vocab-item-arrow">›</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ── Grammar List (all) ──
+function renderGrammarList(filter = 'all') {
+  const container = document.getElementById('grammarListAll');
+  const filtersContainer = document.getElementById('grammarFilters');
+
+  // Build filter chips
+  const passages = [{ id: 'all', title: 'ทั้งหมด' }, ...PASSAGES.map(p => ({ id: p.id, title: p.title }))];
+  filtersContainer.innerHTML = passages.map(p =>
+    `<button class="chip ${filter === p.id ? 'active' : ''}" data-filter="${p.id}" onclick="filterGrammar('${p.id}')">${p.title === 'ทั้งหมด' ? p.title : p.title}</button>`
+  ).join('');
+
+  const allGrammar = [];
+  PASSAGES.forEach(p => {
+    if (filter !== 'all' && p.id !== filter) return;
+    p.grammarPoints.forEach(g => {
+      allGrammar.push({ ...g, passageTitle: p.title });
+    });
+  });
+
+  container.innerHTML = allGrammar.map(g => {
+    const learned = state.learnedGrammar.has(g.title);
+    return `
+    <div class="grammar-card" onclick="toggleGrammarCard(this, '${g.title}')">
+      <div class="grammar-card-header">
+        <div class="grammar-card-title">${learned ? '✅' : '📐'} ${g.title}</div>
+        <div class="grammar-card-arrow">▼</div>
+      </div>
+      <div class="grammar-card-body">
+        <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:8px">จากบท: ${g.passageTitle}</div>
+        <div class="grammar-explain">${g.explain.replace(/\n/g, '<br>')}</div>
+        <div class="grammar-formula">${g.formula}</div>
+        <div class="popup-section-title">ตัวอย่าง</div>
+        ${g.examples.map(ex => `
+          <div class="example-item">
+            <div class="example-en">${ex.en}</div>
+            <div class="example-th">${ex.th}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterGrammar(id) {
+  renderGrammarList(id);
+}
+
+// ── Stats ──
+function updateStats() {
+  const totalVocab = new Set();
+  PASSAGES.forEach(p => p.vocab.forEach(v => totalVocab.add(v.word)));
+  document.getElementById('statWords').textContent = state.learnedWords.size;
+  document.getElementById('statPassages').textContent = state.readPassages.size;
+  document.getElementById('statGrammar').textContent = state.learnedGrammar.size;
+  document.getElementById('statStreak').textContent = state.streak;
+
+  // Streak encouragement
+  const encEl = document.getElementById('streakEncouragement');
+  if (state.streak >= 3) {
+    encEl.textContent = 'ความสม่ำเสมอคือกุญแจสำคัญ! 🗝️ ' + state.streak + ' วันแล้วที่ไม่หยุด';
+    encEl.style.display = 'block';
+  } else {
+    encEl.style.display = 'none';
+  }
+}
+
+// ── Event Listeners ──
+function init() {
+  loadState();
+  applyTheme();
+  updateWelcomeMessage();
+  updateStreakWidget();
+  renderPassageList();
+
+  // Nav
+  document.querySelectorAll('.nav-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pageId = btn.dataset.page;
+      if (pageId === 'pageRead') {
+        renderPassageList();
+      }
+      showPage(pageId);
+    });
+  });
+
+  // Filter chips on reading list
+  document.querySelectorAll('#pageRead .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#pageRead .chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      renderPassageList(chip.dataset.filter);
+    });
+  });
+
+  // Back button
+  document.getElementById('backToList').addEventListener('click', () => {
+    renderPassageList();
+    showPage('pageRead');
+    updateStreakWidget();
+  });
+
+  // Toggle Thai translation
+  document.getElementById('toggleThai').addEventListener('click', () => {
+    const el = document.getElementById('thaiTranslation');
+    el.classList.toggle('show');
+    const btn = document.getElementById('toggleThai');
+    btn.classList.toggle('active');
+    btn.innerHTML = el.classList.contains('show')
+      ? '<span class="toggle-icon">🇹🇭</span> ซ่อนคำแปลภาษาไทย'
+      : '<span class="toggle-icon">🇹🇭</span> แสดงคำแปลภาษาไทย';
+  });
+
+  // Reading tabs
+  document.querySelectorAll('.reading-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.reading-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const tabName = tab.dataset.tab;
+      document.getElementById('readingVocabSection').style.display = tabName === 'vocab' ? '' : 'none';
+      document.getElementById('readingGrammarSection').style.display = tabName === 'grammar' ? '' : 'none';
+    });
+  });
+
+  // Click vocab words in passage
+  document.getElementById('readingPassage').addEventListener('click', (e) => {
+    const wordEl = e.target.closest('.vocab-word');
+    if (!wordEl) return;
+    document.querySelectorAll('.vocab-word').forEach(w => w.classList.remove('active'));
+    wordEl.classList.add('active');
+    const word = wordEl.dataset.word;
+    showWordPopup(word, state.currentPassage?.id);
+  });
+
+  // Close popup
+  document.getElementById('wordPopup').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('wordPopup')) {
+      document.getElementById('wordPopup').classList.remove('show');
+    }
+  });
+
+  // Theme toggle
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    state.darkMode = !state.darkMode;
+    applyTheme();
+    saveState();
+  });
+  document.getElementById('darkModeToggle').addEventListener('change', (e) => {
+    state.darkMode = e.target.checked;
+    applyTheme();
+    saveState();
+  });
+
+  // Vocab search
+  document.getElementById('vocabSearch').addEventListener('input', (e) => {
+    renderVocabList(e.target.value);
+  });
+
+  // Reset progress
+  document.getElementById('resetProgress').addEventListener('click', () => {
+    if (confirm('ต้องการล้างข้อมูลการเรียนทั้งหมดจริงหรือ?')) {
+      state.learnedWords.clear();
+      state.readPassages.clear();
+      state.learnedGrammar.clear();
+      state.streak = 1;
+      saveState();
+      updateStats();
+      updateStreakWidget();
+      // Show encouraging feedback instead of alert
+      const feedback = document.getElementById('resetFeedback');
+      feedback.classList.add('show');
+      setTimeout(() => feedback.classList.remove('show'), 4000);
+    }
+  });
+
+  // PWA Service Worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

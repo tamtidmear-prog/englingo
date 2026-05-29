@@ -1048,6 +1048,749 @@ body {
   display: block;
   animation: fadeIn 0.3s ease;
 }
+
+/* ═══════════════════════════════════════════
+   CSS — Admin Mode
+   ═══════════════════════════════════════════ */
+.admin-badge {
+  display: none;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-left: 6px;
+  animation: fadeIn 0.3s ease;
+}
+body.admin-active .admin-badge { display: inline-flex; }
+
+.nav-admin { display: none !important; }
+body.admin-active .nav-admin { display: flex !important; }
+
+/* PIN Dialog */
+.pin-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.5);
+  display: none; align-items: center; justify-content: center;
+  animation: fadeIn 0.2s;
+}
+.pin-overlay.show { display: flex; }
+
+.pin-dialog {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  width: 90%; max-width: 340px;
+  box-shadow: var(--shadow-lg);
+  animation: celebBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-align: center;
+}
+.pin-dialog h3 {
+  font-family: var(--font-heading);
+  font-size: 1.2rem; font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.pin-dialog p {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+.pin-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: var(--font-en);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 12px;
+  outline: none;
+  transition: border-color 0.2s;
+  -webkit-text-security: disc;
+}
+.pin-input:focus { border-color: var(--accent); }
+.pin-input.error {
+  border-color: #e74c3c;
+  animation: shake 0.4s ease;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+.pin-error-msg {
+  color: #e74c3c;
+  font-size: 0.8rem;
+  margin-top: 8px;
+  min-height: 1.2em;
+}
+.pin-actions {
+  display: flex; gap: 10px;
+  margin-top: 18px;
+}
+.pin-actions button {
+  flex: 1;
+  padding: 12px;
+  min-height: 46px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-family: var(--font-th);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pin-btn-cancel {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border) !important;
+}
+.pin-btn-cancel:hover { background: var(--accent-bg); }
+.pin-btn-confirm {
+  background: var(--accent);
+  color: #fff;
+}
+.pin-btn-confirm:hover { opacity: 0.9; transform: scale(1.02); }
+
+/* Admin Panel */
+.admin-section {
+  margin-bottom: 28px;
+}
+.admin-section-title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--accent-bg);
+}
+.admin-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 22px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-form-group {
+  margin-bottom: 16px;
+}
+.admin-form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+.admin-form-group input[type="text"],
+.admin-form-group textarea,
+.admin-form-group select {
+  width: 100%;
+  padding: 12px 16px;
+  min-height: 46px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: var(--font-th);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.admin-form-group input[type="text"]:focus,
+.admin-form-group textarea:focus,
+.admin-form-group select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+.admin-form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.6;
+}
+.admin-form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237A7A8E' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+.admin-word-count-display {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 22px;
+  min-height: 46px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-family: var(--font-th);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.admin-btn:hover { transform: scale(1.02); }
+.admin-btn:active { transform: scale(0.98); }
+
+.admin-btn-primary {
+  background: var(--accent);
+  color: #fff;
+  width: 100%;
+}
+.admin-btn-primary:hover { opacity: 0.9; }
+
+.admin-btn-secondary {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+.admin-btn-secondary:hover { background: var(--accent-bg-hover); }
+
+.admin-btn-danger {
+  background: rgba(231,76,60,0.08);
+  color: #e74c3c;
+  border: 1px solid rgba(231,76,60,0.18);
+}
+.admin-btn-danger:hover { background: rgba(231,76,60,0.14); }
+
+.admin-btn-sm {
+  padding: 8px 14px;
+  min-height: 36px;
+  font-size: 0.8rem;
+}
+
+.admin-btn-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+/* Example sentence rows */
+.admin-example-row {
+  background: var(--accent-bg);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 10px;
+  position: relative;
+}
+.admin-example-row .admin-form-group { margin-bottom: 8px; }
+.admin-example-row .admin-form-group:last-child { margin-bottom: 0; }
+.admin-remove-example {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(231,76,60,0.12);
+  color: #e74c3c;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.admin-remove-example:hover { background: rgba(231,76,60,0.25); }
+
+/* Content manager list */
+.admin-passage-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+  transition: box-shadow 0.2s;
+}
+.admin-passage-item:hover { box-shadow: var(--shadow-sm); }
+.admin-passage-info { flex: 1; }
+.admin-passage-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+}
+.admin-passage-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: flex;
+  gap: 12px;
+}
+.admin-passage-actions {
+  display: flex;
+  gap: 6px;
+}
+.admin-tag-custom {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 0.65rem;
+  font-weight: 700;
+  margin-left: 6px;
+  text-transform: uppercase;
+}
+.admin-tag-default {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(123,198,126,0.12);
+  color: var(--success);
+  font-size: 0.65rem;
+  font-weight: 700;
+  margin-left: 6px;
+  text-transform: uppercase;
+}
+
+/* Preview card */
+.admin-preview {
+  background: var(--accent-bg);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-top: 14px;
+  border-left: 4px solid var(--accent);
+}
+.admin-preview h4 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.admin-preview p {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* Admin toast */
+.admin-toast {
+  position: fixed;
+  bottom: calc(var(--nav-height) + 20px);
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  padding: 14px 28px;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-th);
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+  z-index: 400;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.admin-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.admin-toast.error {
+  background: #e74c3c;
+}
+
+/* Tabs inside admin */
+.admin-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 18px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  border: 1px solid var(--border);
+}
+.admin-tab {
+  padding: 12px 8px;
+  min-height: 46px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-secondary);
+  font-family: var(--font-th);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: center;
+  white-space: nowrap;
+}
+.admin-tab:hover:not(.active) { background: var(--accent-bg); }
+.admin-tab.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(255,140,97,0.3);
+}
+
+.admin-tab-content { display: none; animation: fadeIn 0.3s; }
+.admin-tab-content.active { display: block; }
+
+/* Admin logout button in settings */
+.admin-logout-section {
+  display: none;
+}
+body.admin-active .admin-logout-section { display: block; }
+
+/* ═══════════════════════════════════════════
+   CSS — AI Assistant
+   ═══════════════════════════════════════════ */
+
+/* AI status banners */
+.ai-status-banner {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ai-status-ready {
+  background: rgba(123,198,126,0.12);
+  color: var(--success);
+  border: 1px solid rgba(123,198,126,0.25);
+}
+.ai-status-missing {
+  background: rgba(255,209,102,0.12);
+  color: #E6A832;
+  border: 1px solid rgba(255,209,102,0.25);
+}
+
+/* AI Key status */
+.ai-key-status {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  min-height: 1.2em;
+}
+.ai-key-status.ready { color: var(--success); }
+.ai-key-status.missing { color: #E6A832; }
+
+/* AI spinner */
+.ai-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: aiSpin 0.8s linear infinite;
+  margin: 0 auto;
+}
+@keyframes aiSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* AI preview card */
+.ai-preview-card {
+  border-left: 4px solid var(--accent);
+}
+.ai-preview-section {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+/* AI vocab/grammar preview items */
+.ai-preview-item {
+  background: var(--accent-bg);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border-left: 3px solid var(--accent);
+}
+.ai-preview-item-word {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ai-preview-item-details {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+.ai-preview-item-examples {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  font-size: 0.82rem;
+}
+.ai-preview-item-examples .example-en {
+  font-size: 0.82rem;
+}
+.ai-preview-item-examples .example-th {
+  font-size: 0.78rem;
+}
+
+/* AI grammar preview */
+.ai-preview-grammar {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+}
+.ai-preview-grammar-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+.ai-preview-grammar-formula {
+  background: var(--accent-bg);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--accent);
+  font-size: 0.85rem;
+  margin: 8px 0;
+  text-align: center;
+}
+.ai-preview-grammar-explain {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* AI TTS button (inline) */
+.ai-tts-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  vertical-align: middle;
+  margin-left: 4px;
+  padding: 0;
+}
+.ai-tts-btn:hover { background: var(--accent-bg-hover); transform: scale(1.1); }
+.ai-tts-btn:active { transform: scale(0.9); }
+
+/* AI inline buttons */
+.ai-inline-btn {
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 0 !important;
+}
+
+/* AI vocab suggestions */
+.ai-suggest-list {
+  margin-top: 10px;
+}
+.ai-suggest-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  margin-bottom: 6px;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.ai-suggest-item:hover {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+.ai-suggest-word {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.ai-suggest-thai {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+.ai-suggest-add {
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-th);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.ai-suggest-add:hover { opacity: 0.9; transform: scale(1.05); }
+
+/* AI loading for inline buttons */
+.ai-inline-loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* ═══════════════════════════════════════════
+   CSS — Lesson Request Queue
+   ═══════════════════════════════════════════ */
+
+.lr-request-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--warning);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.lr-request-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.lr-request-card.lr-status-pending { border-left-color: #FFD166; }
+.lr-request-card.lr-status-processing { border-left-color: #6EC6FF; }
+.lr-request-card.lr-status-done { border-left-color: #7BC67E; }
+
+.lr-request-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.lr-request-topic {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  flex: 1;
+}
+.lr-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+.lr-badge-pending {
+  background: rgba(255,209,102,0.15);
+  color: #E6A832;
+}
+.lr-badge-processing {
+  background: rgba(110,198,255,0.15);
+  color: #4BA8E0;
+}
+.lr-badge-done {
+  background: rgba(123,198,126,0.15);
+  color: #4CAF6A;
+}
+
+.lr-request-meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.lr-request-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lr-request-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.lr-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text-muted);
+}
+.lr-empty p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.lr-loading {
+  text-align: center;
+  padding: 24px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.lr-refresh-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 8px 0;
+}
+.lr-refresh-bar span {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Supabase config in settings */
+.sb-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-top: 10px;
+}
+.sb-status-connected {
+  background: rgba(123,198,126,0.12);
+  color: var(--success);
+  border: 1px solid rgba(123,198,126,0.25);
+}
+.sb-status-disconnected {
+  background: rgba(255,209,102,0.12);
+  color: #E6A832;
+  border: 1px solid rgba(255,209,102,0.25);
+}
+.sb-status-error {
+  background: rgba(231,76,60,0.08);
+  color: #e74c3c;
+  border: 1px solid rgba(231,76,60,0.18);
+}
 </style>
 </head>
 <body>
@@ -1060,6 +1803,7 @@ body {
       <text x="16" y="23" font-size="20" text-anchor="middle" fill="white" font-family="Inter,sans-serif" font-weight="700">E</text>
     </svg>
     EngLingo
+    <span class="admin-badge" id="adminBadge">Admin</span>
   </div>
   <div class="header-actions">
     <button class="btn-icon" id="themeToggle" aria-label="Toggle theme">
@@ -1146,9 +1890,14 @@ body {
       <div class="reading-subtitle" id="readingSubtitle"></div>
     </div>
 
-    <button class="toggle-translation" id="toggleThai">
-      <span class="toggle-icon">🇹🇭</span> แสดงคำแปลภาษาไทย
-    </button>
+    <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
+      <button class="toggle-translation" id="toggleThai" style="margin-bottom:0">
+        <span class="toggle-icon">🇹🇭</span> แสดงคำแปล
+      </button>
+      <button class="toggle-translation" id="speakPassageBtn" onclick="speakText(state.currentPassage?.text, this)" style="margin-bottom:0;background:var(--accent);color:#fff">
+        🔊 ฟังบทอ่าน
+      </button>
+    </div>
 
     <div class="reading-passage" id="readingPassage"></div>
     <div class="thai-translation" id="thaiTranslation"></div>
@@ -1240,8 +1989,393 @@ body {
       <button class="btn-danger" id="resetProgress">🗑️ ล้างข้อมูลการเรียนทั้งหมด</button>
       <div class="reset-feedback" id="resetFeedback">เริ่มต้นใหม่ก็ได้นะ ไม่เป็นไร~ 🌱</div>
     </div>
+
+    <div class="settings-group admin-logout-section">
+      <div class="settings-group-title">แอดมิน</div>
+      <div class="setting-item">
+        <div class="setting-label">
+          <div class="setting-icon">🛡️</div>
+          <span>โหมดแอดมิน</span>
+        </div>
+        <span style="color:var(--success);font-size:0.85rem;font-weight:600">เปิดใช้งาน</span>
+      </div>
+      <button class="btn-danger" id="adminLogout" style="margin-top:10px">🔓 ออกจากระบบแอดมิน</button>
+    </div>
+  </div>
+
+  <!-- ═══ Page: Admin Panel ═══ -->
+  <div class="page" id="pageAdmin">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div class="section-title" style="margin-bottom:0">🛡️ แผงควบคุมแอดมิน</div>
+      <button onclick="adminLogout()" style="padding:8px 16px;min-height:40px;border-radius:var(--radius-full);border:1px solid rgba(231,76,60,0.3);background:rgba(231,76,60,0.08);color:#e74c3c;font-family:var(--font-th);font-size:0.8rem;font-weight:600;cursor:pointer">🔓 ออกจากระบบ</button>
+    </div>
+    <div class="section-subtitle">จัดการเนื้อหาบทเรียน คำศัพท์ และไวยากรณ์</div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab" data-admintab="addPassage" disabled style="opacity:0.4;cursor:not-allowed">🔒 เพิ่มบทอ่าน</button>
+      <button class="admin-tab" data-admintab="addVocab" disabled style="opacity:0.4;cursor:not-allowed">🔒 เพิ่มคำศัพท์</button>
+      <button class="admin-tab" data-admintab="addGrammar" disabled style="opacity:0.4;cursor:not-allowed">🔒 เพิ่ม Grammar</button>
+      <button class="admin-tab" data-admintab="aiLesson" disabled style="opacity:0.4;cursor:not-allowed">🔒 AI สร้างบทเรียน</button>
+      <button class="admin-tab active" data-admintab="lessonQueue">📋 สั่งบทเรียน</button>
+      <button class="admin-tab" data-admintab="manager">จัดการเนื้อหา</button>
+      <button class="admin-tab" data-admintab="settings">ตั้งค่าแอดมิน</button>
+    </div>
+
+    <!-- Tab: Add Passage -->
+    <div class="admin-tab-content active" id="adminTabAddPassage">
+      <div class="admin-card">
+        <div class="admin-section-title">📖 เพิ่มบทอ่านใหม่</div>
+        <div class="admin-form-group">
+          <label>ชื่อบทอ่าน (ภาษาอังกฤษ) <button class="ai-tts-btn" onclick="aiSpeakText('adminPassageTitle')" title="ฟังเสียง">🔊</button></label>
+          <input type="text" id="adminPassageTitle" placeholder="เช่น My First Day at School">
+        </div>
+        <div class="admin-form-group">
+          <label>ชื่อบทอ่าน (ภาษาไทย)</label>
+          <input type="text" id="adminPassageTitleTh" placeholder="เช่น วันแรกที่โรงเรียน">
+        </div>
+        <div class="admin-form-group">
+          <label>ระดับความยาก</label>
+          <select id="adminPassageLevel">
+            <option value="easy">ง่าย (Easy)</option>
+            <option value="medium">ปานกลาง (Medium)</option>
+            <option value="hard">ยาก (Hard)</option>
+          </select>
+        </div>
+        <div class="admin-form-group">
+          <label>คำอธิบายสั้นๆ</label>
+          <input type="text" id="adminPassageDesc" placeholder="เช่น เรียนรู้คำศัพท์เกี่ยวกับโรงเรียน">
+        </div>
+        <div class="admin-form-group">
+          <label>หัวข้อ Grammar</label>
+          <input type="text" id="adminPassageGrammar" placeholder="เช่น Past Simple">
+        </div>
+        <div class="admin-form-group">
+          <label>เนื้อเรื่อง (ภาษาอังกฤษ) <button class="ai-tts-btn" onclick="aiSpeakText('adminPassageText')" title="ฟังเสียง">🔊</button></label>
+          <textarea id="adminPassageText" placeholder="พิมพ์เนื้อเรื่องภาษาอังกฤษที่นี่..."></textarea>
+          <div class="admin-word-count-display" id="adminPassageWordCount">จำนวนคำ: 0</div>
+        </div>
+        <div class="admin-form-group">
+          <label>คำแปลภาษาไทย</label>
+          <textarea id="adminPassageTextTh" placeholder="พิมพ์คำแปลภาษาไทยที่นี่..."></textarea>
+        </div>
+
+        <div id="adminPassagePreview" style="display:none"></div>
+
+        <div class="admin-btn-row">
+          <button class="admin-btn admin-btn-secondary" onclick="adminPreviewPassage()">👁️ ดูตัวอย่าง</button>
+          <button class="admin-btn admin-btn-primary" onclick="adminSavePassage()" style="flex:2">💾 บันทึกบทอ่าน</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Add Vocabulary -->
+    <div class="admin-tab-content" id="adminTabAddVocab">
+      <div class="admin-card">
+        <div class="admin-section-title">📝 เพิ่มคำศัพท์</div>
+        <div class="admin-form-group">
+          <label>เลือกบทอ่าน</label>
+          <select id="adminVocabPassage"></select>
+        </div>
+        <div class="admin-form-group">
+          <label>คำศัพท์ (ภาษาอังกฤษ)</label>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <input type="text" id="adminVocabWord" placeholder="เช่น adventure" style="flex:1">
+            <button class="admin-btn admin-btn-secondary admin-btn-sm ai-inline-btn" onclick="aiAutoFillVocab()" title="AI เติมข้อมูลอัตโนมัติ">🤖 เติมอัตโนมัติ</button>
+          </div>
+        </div>
+        <div class="admin-form-group">
+          <label>แนะนำคำศัพท์จากหัวข้อ</label>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <input type="text" id="adminVocabSuggestTopic" placeholder="เช่น hospital, cooking, travel" style="flex:1">
+            <button class="admin-btn admin-btn-secondary admin-btn-sm ai-inline-btn" onclick="aiSuggestVocab()" title="AI แนะนำคำศัพท์">🤖 แนะนำคำศัพท์</button>
+          </div>
+          <div id="aiVocabSuggestions" style="display:none"></div>
+        </div>
+        <div class="admin-form-group">
+          <label>การออกเสียง (IPA)</label>
+          <input type="text" id="adminVocabPhonetic" placeholder="เช่น /ədˈventʃər/">
+        </div>
+        <div class="admin-form-group">
+          <label>ชนิดของคำ (Part of Speech)</label>
+          <input type="text" id="adminVocabPos" placeholder="เช่น noun, verb, adjective">
+        </div>
+        <div class="admin-form-group">
+          <label>ความหมายภาษาไทย</label>
+          <input type="text" id="adminVocabThai" placeholder="เช่น การผจญภัย">
+        </div>
+        <div class="admin-section-title" style="margin-top:18px;font-size:0.9rem">ตัวอย่างประโยค</div>
+        <div id="adminVocabExamples">
+          <div class="admin-example-row">
+            <div class="admin-form-group">
+              <label>ประโยคภาษาอังกฤษ</label>
+              <input type="text" class="admin-vocab-ex-en" placeholder="เช่น Life is an adventure.">
+            </div>
+            <div class="admin-form-group">
+              <label>คำแปลภาษาไทย</label>
+              <input type="text" class="admin-vocab-ex-th" placeholder="เช่น ชีวิตคือการผจญภัย">
+            </div>
+          </div>
+        </div>
+        <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="adminAddVocabExample()" style="margin-bottom:16px">+ เพิ่มตัวอย่างประโยค</button>
+        <button class="admin-btn admin-btn-primary" onclick="adminSaveVocab()">💾 บันทึกคำศัพท์</button>
+      </div>
+    </div>
+
+    <!-- Tab: Add Grammar -->
+    <div class="admin-tab-content" id="adminTabAddGrammar">
+      <div class="admin-card">
+        <div class="admin-section-title">📐 เพิ่มจุดไวยากรณ์</div>
+        <div class="admin-form-group">
+          <label>เลือกบทอ่าน</label>
+          <select id="adminGrammarPassage"></select>
+        </div>
+        <div class="admin-form-group">
+          <label>ชื่อหัวข้อ (ภาษาอังกฤษ)</label>
+          <input type="text" id="adminGrammarTitle" placeholder="เช่น Present Continuous">
+        </div>
+        <div class="admin-form-group">
+          <label>ชื่อหัวข้อ (ภาษาไทย)</label>
+          <input type="text" id="adminGrammarTitleTh" placeholder="เช่น ปัจจุบันกาลต่อเนื่อง">
+        </div>
+        <div class="admin-form-group">
+          <label>คำอธิบาย (ภาษาไทย)</label>
+          <textarea id="adminGrammarExplain" placeholder="อธิบายหลักไวยากรณ์เป็นภาษาไทย..."></textarea>
+        </div>
+        <div class="admin-form-group">
+          <label>สูตร (Formula)</label>
+          <input type="text" id="adminGrammarFormula" placeholder="เช่น Subject + is/am/are + Verb-ing">
+        </div>
+        <div class="admin-section-title" style="margin-top:18px;font-size:0.9rem">ตัวอย่างประโยค</div>
+        <div id="adminGrammarExamples">
+          <div class="admin-example-row">
+            <div class="admin-form-group">
+              <label>ประโยคภาษาอังกฤษ</label>
+              <input type="text" class="admin-grammar-ex-en" placeholder="เช่น She is reading a book.">
+            </div>
+            <div class="admin-form-group">
+              <label>คำแปลภาษาไทย</label>
+              <input type="text" class="admin-grammar-ex-th" placeholder="เช่น เธอกำลังอ่านหนังสืออยู่">
+            </div>
+          </div>
+        </div>
+        <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="adminAddGrammarExample()" style="margin-bottom:16px">+ เพิ่มตัวอย่างประโยค</button>
+        <button class="admin-btn admin-btn-primary" onclick="adminSaveGrammar()">💾 บันทึกไวยากรณ์</button>
+      </div>
+    </div>
+
+    <!-- Tab: AI Generate Lesson -->
+    <div class="admin-tab-content" id="adminTabAiLesson">
+      <div class="admin-card">
+        <div class="admin-section-title">🤖 AI สร้างบทเรียนอัตโนมัติ</div>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;line-height:1.6">ใส่หัวข้อและระดับ แล้ว AI จะสร้างบทอ่าน คำศัพท์ และไวยากรณ์ให้อัตโนมัติ</p>
+        <div id="aiKeyMissing" style="display:none">
+          <div class="ai-status-banner ai-status-missing">
+            <span>⚠️ กรุณาใส่ Gemini API Key ในแท็บ "ตั้งค่าแอดมิน" ก่อนใช้งาน AI</span>
+          </div>
+        </div>
+        <div id="aiKeyReady" style="display:none">
+          <div class="ai-status-banner ai-status-ready">
+            <span>✅ AI พร้อมใช้งาน</span>
+          </div>
+        </div>
+        <div class="admin-form-group">
+          <label>หัวข้อบทเรียน</label>
+          <input type="text" id="aiTopic" placeholder="เช่น going to the hospital, ordering food, travel">
+        </div>
+        <div class="admin-form-group">
+          <label>ระดับความยาก</label>
+          <select id="aiLevel">
+            <option value="easy">ง่าย (Easy) — ประโยคสั้น คำศัพท์พื้นฐาน</option>
+            <option value="medium" selected>ปานกลาง (Medium) — ประโยคซับซ้อนขึ้น</option>
+            <option value="hard">ยาก (Hard) — เนื้อหาขั้นสูง คำศัพท์ยาก</option>
+          </select>
+        </div>
+        <div class="admin-form-group">
+          <label>เน้นไวยากรณ์ (ไม่บังคับ)</label>
+          <input type="text" id="aiGrammar" placeholder="เช่น Past Continuous, Modal Verbs">
+        </div>
+        <div class="admin-btn-row">
+          <button class="admin-btn admin-btn-primary" id="aiGenerateBtn" onclick="aiGenerateLesson()" style="flex:2">
+            <span id="aiGenerateBtnText">🤖 สร้างบทเรียน</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- AI Preview -->
+      <div id="aiPreviewArea" style="display:none">
+        <div class="admin-card ai-preview-card">
+          <div class="admin-section-title">👁️ ตรวจสอบเนื้อหาที่ AI สร้าง</div>
+          <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:14px">แก้ไขได้ก่อนบันทึก</p>
+
+          <div class="admin-form-group">
+            <label>ชื่อบทอ่าน (อังกฤษ)</label>
+            <input type="text" id="aiPreviewTitle">
+          </div>
+          <div class="admin-form-group">
+            <label>ชื่อบทอ่าน (ไทย)</label>
+            <input type="text" id="aiPreviewTitleTh">
+          </div>
+          <div class="admin-form-group">
+            <label>เนื้อเรื่อง (อังกฤษ) <button class="ai-tts-btn" onclick="aiSpeakText('aiPreviewText')" title="ฟังเสียง">🔊</button></label>
+            <textarea id="aiPreviewText" rows="6"></textarea>
+          </div>
+          <div class="admin-form-group">
+            <label>คำแปล (ไทย)</label>
+            <textarea id="aiPreviewTextTh" rows="5"></textarea>
+          </div>
+
+          <div class="ai-preview-section">
+            <div class="admin-section-title" style="font-size:0.9rem">📝 คำศัพท์ (<span id="aiPreviewVocabCount">0</span> คำ)</div>
+            <div id="aiPreviewVocabList"></div>
+          </div>
+
+          <div class="ai-preview-section">
+            <div class="admin-section-title" style="font-size:0.9rem">📐 ไวยากรณ์ (<span id="aiPreviewGrammarCount">0</span> หัวข้อ)</div>
+            <div id="aiPreviewGrammarList"></div>
+          </div>
+
+          <div class="admin-btn-row" style="margin-top:18px">
+            <button class="admin-btn admin-btn-secondary" onclick="aiGenerateLesson()">🔄 สร้างใหม่</button>
+            <button class="admin-btn admin-btn-primary" onclick="aiSaveLesson()" style="flex:2">💾 บันทึกบทเรียนนี้</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Loading -->
+      <div id="aiLoadingArea" style="display:none">
+        <div class="admin-card" style="text-align:center;padding:40px 20px">
+          <div class="ai-spinner"></div>
+          <p style="color:var(--text-secondary);margin-top:16px;font-size:0.95rem" id="aiLoadingText">🤖 AI กำลังสร้างเนื้อหา...</p>
+          <p style="color:var(--text-muted);font-size:0.8rem;margin-top:6px">อาจใช้เวลา 10-20 วินาที</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Lesson Request Queue -->
+    <div class="admin-tab-content" id="adminTabLessonQueue">
+      <div class="admin-card">
+        <div class="admin-section-title">📋 สั่งบทเรียนใหม่</div>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;line-height:1.6">ส่งคำขอสร้างบทเรียนใหม่ Nexus (AI Agent) จะสร้างเนื้อหาให้แบบ offline แล้วส่งกลับมาเมื่อเสร็จ</p>
+        <div class="admin-form-group">
+          <label>หัวข้อบทเรียน *</label>
+          <input type="text" id="lrTopic" placeholder="เช่น going to the dentist, job interview, cooking Thai food">
+        </div>
+        <div class="admin-form-group">
+          <label>ระดับความยาก</label>
+          <select id="lrLevel">
+            <option value="easy">ง่าย (Easy)</option>
+            <option value="medium" selected>ปานกลาง (Medium)</option>
+            <option value="hard">ยาก (Hard)</option>
+          </select>
+        </div>
+        <div class="admin-form-group">
+          <label>เน้นไวยากรณ์ (ไม่บังคับ)</label>
+          <input type="text" id="lrGrammarFocus" placeholder="เช่น Past Perfect, Passive Voice">
+        </div>
+        <div class="admin-form-group">
+          <label>หมายเหตุเพิ่มเติม (ไม่บังคับ)</label>
+          <textarea id="lrNotes" placeholder="เช่น เน้นคำศัพท์ที่ใช้ในชีวิตจริง, ต้องการ 10 คำศัพท์, เหมาะสำหรับนักเรียน ม.ปลาย" style="min-height:70px"></textarea>
+        </div>
+        <button class="admin-btn admin-btn-primary" onclick="lrSubmitRequest()">📋 ส่งคำขอ</button>
+      </div>
+
+      <!-- Request List -->
+      <div class="admin-section-title" style="margin-top:24px">📑 รายการคำขอ</div>
+      <div class="lr-refresh-bar">
+        <span id="lrLastRefresh">ยังไม่ได้โหลด</span>
+        <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="lrFetchRequests()">🔄 รีเฟรช</button>
+      </div>
+      <div id="lrRequestList">
+        <div class="lr-loading">กำลังโหลด...</div>
+      </div>
+    </div>
+
+    <!-- Tab: Content Manager -->
+    <div class="admin-tab-content" id="adminTabManager">
+      <div class="admin-section-title">📋 จัดการเนื้อหาทั้งหมด</div>
+      <div id="adminPassageList"></div>
+    </div>
+
+    <!-- Tab: Admin Settings -->
+    <div class="admin-tab-content" id="adminTabSettings">
+      <div class="admin-card">
+        <div class="admin-section-title">🔑 เปลี่ยนรหัส PIN</div>
+        <div class="admin-form-group">
+          <label>รหัส PIN ปัจจุบัน</label>
+          <input type="text" id="adminCurrentPin" placeholder="กรอกรหัสเดิม" style="-webkit-text-security:disc">
+        </div>
+        <div class="admin-form-group">
+          <label>รหัส PIN ใหม่</label>
+          <input type="text" id="adminNewPin" placeholder="กรอกรหัสใหม่" style="-webkit-text-security:disc">
+        </div>
+        <div class="admin-form-group">
+          <label>ยืนยันรหัส PIN ใหม่</label>
+          <input type="text" id="adminConfirmPin" placeholder="กรอกรหัสใหม่อีกครั้ง" style="-webkit-text-security:disc">
+        </div>
+        <button class="admin-btn admin-btn-primary" onclick="adminChangePin()">🔑 เปลี่ยนรหัส PIN</button>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-section-title">🤖 ตั้งค่า AI (Gemini)</div>
+        <div class="admin-form-group">
+          <label>Gemini API Key</label>
+          <input type="text" id="adminAiKey" placeholder="ใส่ API Key จาก Google AI Studio" style="-webkit-text-security:disc">
+        </div>
+        <div id="aiKeyStatus" class="ai-key-status"></div>
+        <div class="admin-btn-row" style="margin-top:0">
+          <button class="admin-btn admin-btn-primary" onclick="aiSaveApiKey()" style="flex:2">💾 บันทึก API Key</button>
+          <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="aiClearApiKey()">ลบ Key</button>
+        </div>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:10px;line-height:1.5">API Key จะถูกเก็บไว้ในเครื่องนี้เท่านั้น (localStorage) ไม่ส่งไปที่ไหนนอกจาก Google AI API<br>รับ Key ฟรีได้ที่ <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent)">aistudio.google.com/apikey</a></p>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-section-title">🔗 ตั้งค่า Supabase (สั่งบทเรียน)</div>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:12px;line-height:1.5">เชื่อมต่อกับ Supabase เพื่อใช้ฟีเจอร์ "สั่งบทเรียน" — Nexus AI Agent จะสร้างเนื้อหาแล้วส่งกลับ</p>
+        <div class="admin-form-group">
+          <label>Supabase URL</label>
+          <input type="text" id="adminSupabaseUrl" placeholder="https://xxxxx.supabase.co">
+        </div>
+        <div class="admin-form-group">
+          <label>Supabase Anon Key</label>
+          <input type="text" id="adminSupabaseKey" placeholder="eyJhbGciOi..." style="-webkit-text-security:disc">
+        </div>
+        <div class="admin-btn-row" style="margin-top:0">
+          <button class="admin-btn admin-btn-primary" onclick="sbSaveConfig()" style="flex:2">💾 บันทึก</button>
+          <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="sbTestConnection()">🔌 ทดสอบ</button>
+        </div>
+        <div id="sbStatusIndicator" style="display:none"></div>
+      </div>
+
+      <div class="admin-card">
+        <div class="admin-section-title">💾 สำรอง / กู้คืนข้อมูล</div>
+        <div class="admin-btn-row" style="margin-top:0">
+          <button class="admin-btn admin-btn-secondary" onclick="adminExportData()" style="flex:1">📤 ส่งออก JSON</button>
+          <button class="admin-btn admin-btn-secondary" onclick="document.getElementById('adminImportFile').click()" style="flex:1">📥 นำเข้า JSON</button>
+          <input type="file" id="adminImportFile" accept=".json" style="display:none" onchange="adminImportData(event)">
+        </div>
+        <button class="admin-btn admin-btn-danger" onclick="adminClearAll()" style="width:100%;margin-top:12px">🗑️ ลบเนื้อหาที่เพิ่มเองทั้งหมด</button>
+      </div>
+    </div>
   </div>
 </main>
+
+<!-- ═══ Admin PIN Dialog ═══ -->
+<div class="pin-overlay" id="pinOverlay">
+  <div class="pin-dialog">
+    <h3>🔒 เข้าสู่ระบบแอดมิน</h3>
+    <p>กรอกรหัส PIN เพื่อเข้าถึงแผงควบคุม</p>
+    <input type="tel" class="pin-input" id="pinInput" maxlength="10" placeholder="----" autocomplete="off">
+    <div class="pin-error-msg" id="pinError"></div>
+    <div class="pin-actions">
+      <button class="pin-btn-cancel" onclick="adminClosePinDialog()">ยกเลิก</button>
+      <button class="pin-btn-confirm" onclick="adminVerifyPin()">เข้าสู่ระบบ</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Admin Toast ═══ -->
+<div class="admin-toast" id="adminToast"></div>
 
 <!-- ═══ Word Popup ═══ -->
 <div class="word-popup-overlay" id="wordPopup">
@@ -1309,6 +2443,10 @@ body {
   <button class="nav-item" data-page="pageSettings">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
     <span>ตั้งค่า</span>
+  </button>
+  <button class="nav-item nav-admin" data-page="pageAdmin">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    <span>แอดมิน</span>
   </button>
 </nav>
 
@@ -1856,6 +2994,7 @@ function showPage(pageId) {
   if (pageId === 'pageVocab') renderVocabList();
   if (pageId === 'pageGrammar') renderGrammarList();
   if (pageId === 'pageSettings') updateStats();
+  if (pageId === 'pageAdmin') { adminRefreshDropdowns(); adminRenderManager(); }
   window.scrollTo(0, 0);
 }
 
@@ -1967,7 +3106,7 @@ function renderReadingGrammar(passage) {
         <div class="popup-section-title">ตัวอย่าง</div>
         ${g.examples.map(ex => `
           <div class="example-item">
-            <div class="example-en">${ex.en}</div>
+            <div class="example-en" style="display:flex;align-items:center;gap:6px"><span style="flex:1">${ex.en}</span><button onclick="event.stopPropagation();speakText('${ex.en.replace(/'/g,"\\'")}',this)" style="border:none;background:var(--accent-bg);color:var(--accent);border-radius:50%;width:28px;height:28px;font-size:14px;cursor:pointer;flex-shrink:0">🔊</button></div>
             <div class="example-th">${ex.th}</div>
           </div>
         `).join('')}
@@ -2126,6 +3265,21 @@ function fallbackSpeak(word, done) {
   }
 }
 
+function speakText(text, btn) {
+  if (!window.speechSynthesis || !text) return;
+  window.speechSynthesis.cancel();
+  const oldText = btn ? btn.textContent : '';
+  if (btn) btn.textContent = '⏳';
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = 0.85;
+  const restore = () => { if (btn) btn.textContent = oldText || '🔊'; };
+  u.onend = restore;
+  u.onerror = restore;
+  window.speechSynthesis.speak(u);
+  setTimeout(restore, Math.max(5000, text.length * 80));
+}
+
 // ── Vocab List (all) ──
 function renderVocabList(searchTerm = '') {
   const container = document.getElementById('vocabListAll');
@@ -2210,7 +3364,7 @@ function renderGrammarList(filter = 'all') {
         <div class="popup-section-title">ตัวอย่าง</div>
         ${g.examples.map(ex => `
           <div class="example-item">
-            <div class="example-en">${ex.en}</div>
+            <div class="example-en" style="display:flex;align-items:center;gap:6px"><span style="flex:1">${ex.en}</span><button onclick="event.stopPropagation();speakText('${ex.en.replace(/'/g,"\\'")}',this)" style="border:none;background:var(--accent-bg);color:var(--accent);border-radius:50%;width:28px;height:28px;font-size:14px;cursor:pointer;flex-shrink:0">🔊</button></div>
             <div class="example-th">${ex.th}</div>
           </div>
         `).join('')}
@@ -2242,10 +3396,1557 @@ function updateStats() {
   }
 }
 
+/* ═══════════════════════════════════════════
+   JS — Admin Mode
+   ═══════════════════════════════════════════ */
+
+const ADMIN_PIN_KEY = 'englingo_admin_pin';
+const ADMIN_SESSION_KEY = 'englingo_admin_session';
+const CUSTOM_PASSAGES_KEY = 'englingo_custom_passages';
+const DEFAULT_PIN = '1234';
+const ADMIN_TIMEOUT_MS = 5 * 60 * 1000;
+let _adminTimeoutTimer = null;
+
+// ── Custom Passages Storage ──
+function loadCustomPassages() {
+  try {
+    const data = localStorage.getItem(CUSTOM_PASSAGES_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch(e) { return []; }
+}
+
+function saveCustomPassages(passages) {
+  try {
+    localStorage.setItem(CUSTOM_PASSAGES_KEY, JSON.stringify(passages));
+  } catch(e) {}
+}
+
+function mergePassages() {
+  const custom = loadCustomPassages();
+  // Remove old custom passages from PASSAGES, keep defaults
+  while (PASSAGES.length > PASSAGES._defaultCount) {
+    PASSAGES.pop();
+  }
+  // Add custom passages
+  custom.forEach(p => {
+    p.custom = true;
+    PASSAGES.push(p);
+  });
+}
+
+function getAdminPin() {
+  return localStorage.getItem(ADMIN_PIN_KEY) || DEFAULT_PIN;
+}
+
+function isAdminActive() {
+  return localStorage.getItem(ADMIN_SESSION_KEY) === 'true';
+}
+
+function setAdminSession(active) {
+  if (active) {
+    localStorage.setItem(ADMIN_SESSION_KEY, 'true');
+    adminResetTimeout();
+  } else {
+    localStorage.removeItem(ADMIN_SESSION_KEY);
+    if (_adminTimeoutTimer) { clearTimeout(_adminTimeoutTimer); _adminTimeoutTimer = null; }
+  }
+  document.body.classList.toggle('admin-active', active);
+}
+
+function adminResetTimeout() {
+  if (_adminTimeoutTimer) clearTimeout(_adminTimeoutTimer);
+  _adminTimeoutTimer = setTimeout(() => {
+    if (isAdminActive()) {
+      adminLogout();
+      adminToast('หมดเวลา Admin — ออกจากระบบอัตโนมัติ', true);
+    }
+  }, ADMIN_TIMEOUT_MS);
+}
+
+['click','keydown','touchstart','scroll'].forEach(evt => {
+  document.addEventListener(evt, () => {
+    if (isAdminActive()) adminResetTimeout();
+  }, { passive: true });
+});
+
+// ── Admin Toast ──
+function adminToast(msg, isError) {
+  const el = document.getElementById('adminToast');
+  el.textContent = msg;
+  el.classList.toggle('error', !!isError);
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// ── PIN Dialog ──
+let _logoTapCount = 0;
+let _logoTapTimer = null;
+let _logoLongPressTimer = null;
+
+function adminSetupLogoTrigger() {
+  const logo = document.querySelector('.app-logo');
+  if (!logo) return;
+
+  // 5x tap
+  logo.addEventListener('click', (e) => {
+    if (isAdminActive()) return;
+    _logoTapCount++;
+    if (_logoTapCount >= 5) {
+      _logoTapCount = 0;
+      clearTimeout(_logoTapTimer);
+      adminShowPinDialog();
+    } else {
+      clearTimeout(_logoTapTimer);
+      _logoTapTimer = setTimeout(() => { _logoTapCount = 0; }, 1500);
+    }
+  });
+
+  // Long press
+  logo.addEventListener('touchstart', (e) => {
+    if (isAdminActive()) return;
+    _logoLongPressTimer = setTimeout(() => {
+      adminShowPinDialog();
+    }, 1200);
+  }, { passive: true });
+
+  logo.addEventListener('touchend', () => {
+    clearTimeout(_logoLongPressTimer);
+  });
+  logo.addEventListener('touchcancel', () => {
+    clearTimeout(_logoLongPressTimer);
+  });
+  logo.addEventListener('touchmove', () => {
+    clearTimeout(_logoLongPressTimer);
+  });
+}
+
+function adminShowPinDialog() {
+  const overlay = document.getElementById('pinOverlay');
+  const input = document.getElementById('pinInput');
+  const error = document.getElementById('pinError');
+  input.value = '';
+  error.textContent = '';
+  input.classList.remove('error');
+  overlay.classList.add('show');
+  setTimeout(() => input.focus(), 100);
+}
+
+function adminClosePinDialog() {
+  document.getElementById('pinOverlay').classList.remove('show');
+}
+
+function adminVerifyPin() {
+  const input = document.getElementById('pinInput');
+  const error = document.getElementById('pinError');
+  const pin = input.value.trim();
+  if (pin === getAdminPin()) {
+    setAdminSession(true);
+    adminClosePinDialog();
+    adminToast('เข้าสู่ระบบแอดมินสำเร็จ');
+    adminRefreshDropdowns();
+    adminRenderManager();
+  } else {
+    input.classList.add('error');
+    error.textContent = 'รหัส PIN ไม่ถูกต้อง';
+    setTimeout(() => input.classList.remove('error'), 400);
+  }
+}
+
+function adminLogout() {
+  if (confirm('ต้องการออกจากระบบแอดมินใช่หรือไม่?')) {
+    setAdminSession(false);
+    // If currently on admin page, go back to read
+    if (state.currentPage === 'pageAdmin') {
+      showPage('pageRead');
+      renderPassageList();
+    }
+    adminToast('ออกจากระบบแอดมินแล้ว');
+  }
+}
+
+// ── Admin Tabs ──
+function adminSetupTabs() {
+  document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+      const target = tab.dataset.admintab;
+      const mapping = {
+        addPassage: 'adminTabAddPassage',
+        addVocab: 'adminTabAddVocab',
+        addGrammar: 'adminTabAddGrammar',
+        aiLesson: 'adminTabAiLesson',
+        lessonQueue: 'adminTabLessonQueue',
+        manager: 'adminTabManager',
+        settings: 'adminTabSettings'
+      };
+      const el = document.getElementById(mapping[target]);
+      if (el) el.classList.add('active');
+
+      if (target === 'addVocab' || target === 'addGrammar') {
+        adminRefreshDropdowns();
+      }
+      if (target === 'manager') {
+        adminRenderManager();
+      }
+      if (target === 'aiLesson') {
+        aiUpdateKeyStatus();
+      }
+      if (target === 'lessonQueue') {
+        lrFetchRequests();
+        lrStartAutoRefresh();
+      } else {
+        lrStopAutoRefresh();
+      }
+      if (target === 'settings') {
+        aiLoadKeyToField();
+        sbLoadConfigToFields();
+      }
+    });
+  });
+}
+
+// ── Dropdowns ──
+function adminRefreshDropdowns() {
+  const vocabSelect = document.getElementById('adminVocabPassage');
+  const grammarSelect = document.getElementById('adminGrammarPassage');
+  const options = PASSAGES.map(p =>
+    `<option value="${p.id}">${p.title} (${p.titleTh})${p.custom ? ' [กำหนดเอง]' : ''}</option>`
+  ).join('');
+  if (vocabSelect) vocabSelect.innerHTML = options;
+  if (grammarSelect) grammarSelect.innerHTML = options;
+}
+
+// ── Word Count ──
+function adminSetupWordCount() {
+  const textarea = document.getElementById('adminPassageText');
+  if (!textarea) return;
+  textarea.addEventListener('input', () => {
+    const text = textarea.value.trim();
+    const count = text ? text.split(/\s+/).length : 0;
+    document.getElementById('adminPassageWordCount').textContent = 'จำนวนคำ: ' + count;
+  });
+}
+
+// ── Add/Remove Examples ──
+function adminAddVocabExample() {
+  const container = document.getElementById('adminVocabExamples');
+  const row = document.createElement('div');
+  row.className = 'admin-example-row';
+  row.innerHTML = `
+    <button class="admin-remove-example" onclick="this.parentElement.remove()">✕</button>
+    <div class="admin-form-group">
+      <label>ประโยคภาษาอังกฤษ</label>
+      <input type="text" class="admin-vocab-ex-en" placeholder="เช่น Life is an adventure.">
+    </div>
+    <div class="admin-form-group">
+      <label>คำแปลภาษาไทย</label>
+      <input type="text" class="admin-vocab-ex-th" placeholder="เช่น ชีวิตคือการผจญภัย">
+    </div>`;
+  container.appendChild(row);
+}
+
+function adminAddGrammarExample() {
+  const container = document.getElementById('adminGrammarExamples');
+  const row = document.createElement('div');
+  row.className = 'admin-example-row';
+  row.innerHTML = `
+    <button class="admin-remove-example" onclick="this.parentElement.remove()">✕</button>
+    <div class="admin-form-group">
+      <label>ประโยคภาษาอังกฤษ</label>
+      <input type="text" class="admin-grammar-ex-en" placeholder="เช่น She is reading a book.">
+    </div>
+    <div class="admin-form-group">
+      <label>คำแปลภาษาไทย</label>
+      <input type="text" class="admin-grammar-ex-th" placeholder="เช่น เธอกำลังอ่านหนังสืออยู่">
+    </div>`;
+  container.appendChild(row);
+}
+
+// ── Save Passage ──
+function adminSavePassage() {
+  const title = document.getElementById('adminPassageTitle').value.trim();
+  const titleTh = document.getElementById('adminPassageTitleTh').value.trim();
+  const level = document.getElementById('adminPassageLevel').value;
+  const desc = document.getElementById('adminPassageDesc').value.trim();
+  const grammar = document.getElementById('adminPassageGrammar').value.trim();
+  const text = document.getElementById('adminPassageText').value.trim();
+  const textTh = document.getElementById('adminPassageTextTh').value.trim();
+
+  if (!title || !titleTh || !text || !textTh) {
+    adminToast('กรุณากรอกข้อมูลให้ครบ (ชื่อ, เนื้อเรื่อง, คำแปล)', true);
+    return;
+  }
+
+  const levelTh = { easy: 'ง่าย', medium: 'ปานกลาง', hard: 'ยาก' }[level];
+  const wordCount = text.split(/\s+/).length;
+  const id = 'custom-' + Date.now();
+
+  const passage = {
+    id, title, titleTh, level, levelTh,
+    desc: desc || 'บทอ่านที่เพิ่มโดยแอดมิน',
+    grammar: grammar || '-',
+    wordCount, text, textTh,
+    vocab: [],
+    grammarPoints: [],
+    custom: true
+  };
+
+  const custom = loadCustomPassages();
+  custom.push(passage);
+  saveCustomPassages(custom);
+  mergePassages();
+  renderPassageList();
+
+  // Clear form
+  document.getElementById('adminPassageTitle').value = '';
+  document.getElementById('adminPassageTitleTh').value = '';
+  document.getElementById('adminPassageLevel').value = 'easy';
+  document.getElementById('adminPassageDesc').value = '';
+  document.getElementById('adminPassageGrammar').value = '';
+  document.getElementById('adminPassageText').value = '';
+  document.getElementById('adminPassageTextTh').value = '';
+  document.getElementById('adminPassageWordCount').textContent = 'จำนวนคำ: 0';
+  document.getElementById('adminPassagePreview').style.display = 'none';
+
+  adminRefreshDropdowns();
+  adminToast('บันทึกบทอ่านใหม่สำเร็จ!');
+}
+
+// ── Preview Passage ──
+function adminPreviewPassage() {
+  const title = document.getElementById('adminPassageTitle').value.trim();
+  const titleTh = document.getElementById('adminPassageTitleTh').value.trim();
+  const text = document.getElementById('adminPassageText').value.trim();
+  const textTh = document.getElementById('adminPassageTextTh').value.trim();
+  const level = document.getElementById('adminPassageLevel').value;
+
+  if (!title && !text) {
+    adminToast('กรุณากรอกข้อมูลก่อนดูตัวอย่าง', true);
+    return;
+  }
+
+  const levelTh = { easy: 'ง่าย', medium: 'ปานกลาง', hard: 'ยาก' }[level];
+  const wordCount = text ? text.split(/\s+/).length : 0;
+
+  const preview = document.getElementById('adminPassagePreview');
+  preview.style.display = 'block';
+  preview.innerHTML = `
+    <div class="admin-preview">
+      <h4>${title || '(ไม่มีชื่อ)'} <span class="level-badge level-${level}">${levelTh}</span></h4>
+      <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px">${titleTh || ''} | ${wordCount} คำ</p>
+      <p style="font-family:var(--font-en);font-size:0.9rem;line-height:1.8;margin-bottom:12px">${text || '(ไม่มีเนื้อเรื่อง)'}</p>
+      <p style="font-size:0.85rem;color:var(--text-secondary);border-top:1px solid var(--border);padding-top:10px">${textTh || '(ไม่มีคำแปล)'}</p>
+    </div>`;
+  preview.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ── Save Vocab ──
+function adminSaveVocab() {
+  const passageId = document.getElementById('adminVocabPassage').value;
+  const word = document.getElementById('adminVocabWord').value.trim();
+  const phonetic = document.getElementById('adminVocabPhonetic').value.trim();
+  const pos = document.getElementById('adminVocabPos').value.trim();
+  const thai = document.getElementById('adminVocabThai').value.trim();
+
+  if (!passageId || !word || !thai) {
+    adminToast('กรุณากรอก คำศัพท์ และ ความหมายภาษาไทย', true);
+    return;
+  }
+
+  // Gather examples
+  const exEns = document.querySelectorAll('#adminVocabExamples .admin-vocab-ex-en');
+  const exThs = document.querySelectorAll('#adminVocabExamples .admin-vocab-ex-th');
+  const examples = [];
+  exEns.forEach((el, i) => {
+    const en = el.value.trim();
+    const th = exThs[i] ? exThs[i].value.trim() : '';
+    if (en && th) examples.push({ en, th });
+  });
+
+  if (examples.length === 0) {
+    adminToast('กรุณาเพิ่มตัวอย่างประโยคอย่างน้อย 1 ข้อ', true);
+    return;
+  }
+
+  const vocabEntry = {
+    word,
+    phonetic: phonetic || '',
+    pos: pos || 'noun',
+    thai,
+    examples
+  };
+
+  // Find passage and add vocab
+  const passage = PASSAGES.find(p => p.id === passageId);
+  if (!passage) {
+    adminToast('ไม่พบบทอ่านที่เลือก', true);
+    return;
+  }
+
+  // Check duplicate
+  if (passage.vocab.some(v => v.word.toLowerCase() === word.toLowerCase())) {
+    adminToast('คำศัพท์นี้มีอยู่ในบทอ่านนี้แล้ว', true);
+    return;
+  }
+
+  passage.vocab.push(vocabEntry);
+
+  // If custom passage, save to localStorage
+  if (passage.custom) {
+    const custom = loadCustomPassages();
+    const cp = custom.find(p => p.id === passageId);
+    if (cp) {
+      cp.vocab.push(vocabEntry);
+      saveCustomPassages(custom);
+    }
+  } else {
+    // For default passages, store additions in a separate key
+    adminSaveDefaultAdditions(passageId, 'vocab', vocabEntry);
+  }
+
+  // Clear form
+  document.getElementById('adminVocabWord').value = '';
+  document.getElementById('adminVocabPhonetic').value = '';
+  document.getElementById('adminVocabPos').value = '';
+  document.getElementById('adminVocabThai').value = '';
+  document.getElementById('adminVocabExamples').innerHTML = `
+    <div class="admin-example-row">
+      <div class="admin-form-group">
+        <label>ประโยคภาษาอังกฤษ</label>
+        <input type="text" class="admin-vocab-ex-en" placeholder="เช่น Life is an adventure.">
+      </div>
+      <div class="admin-form-group">
+        <label>คำแปลภาษาไทย</label>
+        <input type="text" class="admin-vocab-ex-th" placeholder="เช่น ชีวิตคือการผจญภัย">
+      </div>
+    </div>`;
+
+  adminToast('เพิ่มคำศัพท์ "' + word + '" สำเร็จ!');
+}
+
+// ── Save Grammar ──
+function adminSaveGrammar() {
+  const passageId = document.getElementById('adminGrammarPassage').value;
+  const title = document.getElementById('adminGrammarTitle').value.trim();
+  const titleTh = document.getElementById('adminGrammarTitleTh').value.trim();
+  const explain = document.getElementById('adminGrammarExplain').value.trim();
+  const formula = document.getElementById('adminGrammarFormula').value.trim();
+
+  if (!passageId || !title || !titleTh || !explain) {
+    adminToast('กรุณากรอก ชื่อหัวข้อ และ คำอธิบาย', true);
+    return;
+  }
+
+  // Gather examples
+  const exEns = document.querySelectorAll('#adminGrammarExamples .admin-grammar-ex-en');
+  const exThs = document.querySelectorAll('#adminGrammarExamples .admin-grammar-ex-th');
+  const examples = [];
+  exEns.forEach((el, i) => {
+    const en = el.value.trim();
+    const th = exThs[i] ? exThs[i].value.trim() : '';
+    if (en && th) examples.push({ en, th });
+  });
+
+  if (examples.length === 0) {
+    adminToast('กรุณาเพิ่มตัวอย่างประโยคอย่างน้อย 1 ข้อ', true);
+    return;
+  }
+
+  const grammarEntry = {
+    title, titleTh, explain,
+    formula: formula || '-',
+    examples
+  };
+
+  const passage = PASSAGES.find(p => p.id === passageId);
+  if (!passage) {
+    adminToast('ไม่พบบทอ่านที่เลือก', true);
+    return;
+  }
+
+  // Check duplicate
+  if (passage.grammarPoints.some(g => g.title.toLowerCase() === title.toLowerCase())) {
+    adminToast('หัวข้อไวยากรณ์นี้มีอยู่ในบทอ่านนี้แล้ว', true);
+    return;
+  }
+
+  passage.grammarPoints.push(grammarEntry);
+
+  if (passage.custom) {
+    const custom = loadCustomPassages();
+    const cp = custom.find(p => p.id === passageId);
+    if (cp) {
+      cp.grammarPoints.push(grammarEntry);
+      saveCustomPassages(custom);
+    }
+  } else {
+    adminSaveDefaultAdditions(passageId, 'grammar', grammarEntry);
+  }
+
+  // Clear form
+  document.getElementById('adminGrammarTitle').value = '';
+  document.getElementById('adminGrammarTitleTh').value = '';
+  document.getElementById('adminGrammarExplain').value = '';
+  document.getElementById('adminGrammarFormula').value = '';
+  document.getElementById('adminGrammarExamples').innerHTML = `
+    <div class="admin-example-row">
+      <div class="admin-form-group">
+        <label>ประโยคภาษาอังกฤษ</label>
+        <input type="text" class="admin-grammar-ex-en" placeholder="เช่น She is reading a book.">
+      </div>
+      <div class="admin-form-group">
+        <label>คำแปลภาษาไทย</label>
+        <input type="text" class="admin-grammar-ex-th" placeholder="เช่น เธอกำลังอ่านหนังสืออยู่">
+      </div>
+    </div>`;
+
+  adminToast('เพิ่มไวยากรณ์ "' + title + '" สำเร็จ!');
+}
+
+// ── Default passage additions (vocab/grammar added to built-in passages) ──
+const DEFAULT_ADDITIONS_KEY = 'englingo_default_additions';
+
+function loadDefaultAdditions() {
+  try {
+    const data = localStorage.getItem(DEFAULT_ADDITIONS_KEY);
+    return data ? JSON.parse(data) : {};
+  } catch(e) { return {}; }
+}
+
+function adminSaveDefaultAdditions(passageId, type, entry) {
+  const additions = loadDefaultAdditions();
+  if (!additions[passageId]) additions[passageId] = { vocab: [], grammar: [] };
+  if (type === 'vocab') additions[passageId].vocab.push(entry);
+  if (type === 'grammar') additions[passageId].grammar.push(entry);
+  localStorage.setItem(DEFAULT_ADDITIONS_KEY, JSON.stringify(additions));
+}
+
+function applyDefaultAdditions() {
+  const additions = loadDefaultAdditions();
+  Object.entries(additions).forEach(([passageId, data]) => {
+    const passage = PASSAGES.find(p => p.id === passageId);
+    if (!passage) return;
+    if (data.vocab) {
+      data.vocab.forEach(v => {
+        if (!passage.vocab.some(ev => ev.word.toLowerCase() === v.word.toLowerCase())) {
+          passage.vocab.push(v);
+        }
+      });
+    }
+    if (data.grammar) {
+      data.grammar.forEach(g => {
+        if (!passage.grammarPoints.some(eg => eg.title.toLowerCase() === g.title.toLowerCase())) {
+          passage.grammarPoints.push(g);
+        }
+      });
+    }
+  });
+}
+
+// ── Content Manager ──
+function adminRenderManager() {
+  const container = document.getElementById('adminPassageList');
+  if (!container) return;
+
+  container.innerHTML = PASSAGES.map(p => {
+    const isCustom = p.custom;
+    return `
+    <div class="admin-passage-item">
+      <div class="admin-passage-info">
+        <div class="admin-passage-title">
+          ${p.title}
+          ${isCustom ? '<span class="admin-tag-custom">กำหนดเอง</span>' : '<span class="admin-tag-default">ค่าเริ่มต้น</span>'}
+        </div>
+        <div class="admin-passage-meta">
+          <span>${p.titleTh}</span>
+          <span>${p.vocab.length} คำศัพท์</span>
+          <span>${p.grammarPoints.length} ไวยากรณ์</span>
+        </div>
+      </div>
+      <div class="admin-passage-actions">
+        ${isCustom ? `
+          <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="adminEditPassage('${p.id}')">แก้ไข</button>
+          <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="adminDeletePassage('${p.id}')">ลบ</button>
+        ` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function adminDeletePassage(id) {
+  const passage = PASSAGES.find(p => p.id === id);
+  if (!passage || !passage.custom) return;
+  if (!confirm('ต้องการลบบทอ่าน "' + passage.title + '" จริงหรือ?')) return;
+
+  const custom = loadCustomPassages();
+  const filtered = custom.filter(p => p.id !== id);
+  saveCustomPassages(filtered);
+
+  // Remove learned words/grammar for this passage
+  state.readPassages.delete(id);
+  saveState();
+
+  mergePassages();
+  renderPassageList();
+  adminRenderManager();
+  adminRefreshDropdowns();
+  adminToast('ลบบทอ่าน "' + passage.title + '" แล้ว');
+}
+
+function adminEditPassage(id) {
+  const custom = loadCustomPassages();
+  const passage = custom.find(p => p.id === id);
+  if (!passage) return;
+
+  // Switch to add passage tab and fill form
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.admin-tab[data-admintab="addPassage"]').classList.add('active');
+  document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('adminTabAddPassage').classList.add('active');
+
+  document.getElementById('adminPassageTitle').value = passage.title;
+  document.getElementById('adminPassageTitleTh').value = passage.titleTh;
+  document.getElementById('adminPassageLevel').value = passage.level;
+  document.getElementById('adminPassageDesc').value = passage.desc;
+  document.getElementById('adminPassageGrammar').value = passage.grammar;
+  document.getElementById('adminPassageText').value = passage.text;
+  document.getElementById('adminPassageTextTh').value = passage.textTh;
+  const wc = passage.text.trim().split(/\s+/).length;
+  document.getElementById('adminPassageWordCount').textContent = 'จำนวนคำ: ' + wc;
+
+  // Delete old passage (will re-save with same content via save button)
+  const filtered = custom.filter(p => p.id !== id);
+  saveCustomPassages(filtered);
+  mergePassages();
+
+  adminToast('แก้ไขบทอ่าน — กรอกข้อมูลแล้วกดบันทึก');
+  window.scrollTo(0, 0);
+}
+
+// ── Change PIN ──
+function adminChangePin() {
+  const current = document.getElementById('adminCurrentPin').value.trim();
+  const newPin = document.getElementById('adminNewPin').value.trim();
+  const confirm2 = document.getElementById('adminConfirmPin').value.trim();
+
+  if (current !== getAdminPin()) {
+    adminToast('รหัส PIN ปัจจุบันไม่ถูกต้อง', true);
+    return;
+  }
+  if (!newPin || newPin.length < 4) {
+    adminToast('รหัส PIN ใหม่ต้องมีอย่างน้อย 4 หลัก', true);
+    return;
+  }
+  if (newPin !== confirm2) {
+    adminToast('รหัส PIN ใหม่ไม่ตรงกัน', true);
+    return;
+  }
+
+  localStorage.setItem(ADMIN_PIN_KEY, newPin);
+  document.getElementById('adminCurrentPin').value = '';
+  document.getElementById('adminNewPin').value = '';
+  document.getElementById('adminConfirmPin').value = '';
+  adminToast('เปลี่ยนรหัส PIN สำเร็จ!');
+}
+
+// ── Export/Import ──
+function adminExportData() {
+  const data = {
+    version: 1,
+    exportDate: new Date().toISOString(),
+    customPassages: loadCustomPassages(),
+    defaultAdditions: loadDefaultAdditions()
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'englingo-content-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  adminToast('ส่งออกข้อมูลสำเร็จ!');
+}
+
+function adminImportData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.customPassages || !Array.isArray(data.customPassages)) {
+        adminToast('ไฟล์ JSON ไม่ถูกต้อง', true);
+        return;
+      }
+
+      if (!confirm('การนำเข้าจะเพิ่มเนื้อหาจากไฟล์ (ไม่ทับของเดิม) ดำเนินการต่อ?')) return;
+
+      const existing = loadCustomPassages();
+      const existingIds = new Set(existing.map(p => p.id));
+
+      data.customPassages.forEach(p => {
+        if (!existingIds.has(p.id)) {
+          p.custom = true;
+          existing.push(p);
+        }
+      });
+      saveCustomPassages(existing);
+
+      // Merge default additions
+      if (data.defaultAdditions) {
+        const currentAdditions = loadDefaultAdditions();
+        Object.entries(data.defaultAdditions).forEach(([pid, addData]) => {
+          if (!currentAdditions[pid]) currentAdditions[pid] = { vocab: [], grammar: [] };
+          if (addData.vocab) {
+            addData.vocab.forEach(v => {
+              if (!currentAdditions[pid].vocab.some(ev => ev.word.toLowerCase() === v.word.toLowerCase())) {
+                currentAdditions[pid].vocab.push(v);
+              }
+            });
+          }
+          if (addData.grammar) {
+            addData.grammar.forEach(g => {
+              if (!currentAdditions[pid].grammar.some(eg => eg.title.toLowerCase() === g.title.toLowerCase())) {
+                currentAdditions[pid].grammar.push(g);
+              }
+            });
+          }
+        });
+        localStorage.setItem(DEFAULT_ADDITIONS_KEY, JSON.stringify(currentAdditions));
+      }
+
+      mergePassages();
+      applyDefaultAdditions();
+      renderPassageList();
+      adminRenderManager();
+      adminRefreshDropdowns();
+      adminToast('นำเข้าข้อมูลสำเร็จ!');
+    } catch(err) {
+      adminToast('ไม่สามารถอ่านไฟล์ได้: ' + err.message, true);
+    }
+  };
+  reader.readAsText(file);
+  // Reset file input
+  event.target.value = '';
+}
+
+function adminClearAll() {
+  if (!confirm('ต้องการลบเนื้อหาที่เพิ่มเองทั้งหมดจริงหรือ?\n\n(บทอ่านค่าเริ่มต้นจะไม่ถูกลบ)')) return;
+  if (!confirm('ยืนยันอีกครั้ง — ข้อมูลจะถูกลบถาวร')) return;
+
+  localStorage.removeItem(CUSTOM_PASSAGES_KEY);
+  localStorage.removeItem(DEFAULT_ADDITIONS_KEY);
+
+  // Reload PASSAGES to reset defaults
+  while (PASSAGES.length > PASSAGES._defaultCount) {
+    PASSAGES.pop();
+  }
+  // Re-init default vocab/grammar (remove any additions)
+  // Simplest approach: reload the page
+  location.reload();
+}
+
+/* ═══════════════════════════════════════════
+   JS — AI Assistant (Gemini)
+   ═══════════════════════════════════════════ */
+
+const AI_KEY_STORAGE = 'englingo_ai_key';
+let _aiGeneratedData = null; // Holds the last generated lesson for saving
+
+// ── Gemini API Call ──
+async function callGemini(prompt) {
+  const apiKey = localStorage.getItem(AI_KEY_STORAGE);
+  if (!apiKey) {
+    adminToast('กรุณาใส่ Gemini API Key ในตั้งค่า Admin', true);
+    return null;
+  }
+
+  const maxRetries = 3;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { temperature: 0.7, maxOutputTokens: 4096, responseMimeType: 'application/json' }
+        })
+      });
+
+      if (res.status === 503 && attempt < maxRetries) {
+        await new Promise(r => setTimeout(r, 2000 * attempt));
+        continue;
+      }
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        const errMsg = errData?.error?.message || `HTTP ${res.status}`;
+        throw new Error(errMsg);
+      }
+
+      const data = await res.json();
+      return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? null;
+    } catch (err) {
+      if (attempt < maxRetries && err.message?.includes('503')) {
+        await new Promise(r => setTimeout(r, 2000 * attempt));
+        continue;
+      }
+      adminToast('AI Error: ' + err.message, true);
+      return null;
+    }
+  }
+}
+
+// ── Parse JSON from AI response (strip markdown code blocks) ──
+function aiParseJSON(text) {
+  if (!text) return null;
+  // Remove ```json ... ``` wrappers
+  let cleaned = text.trim();
+  cleaned = cleaned.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '');
+  try {
+    return JSON.parse(cleaned);
+  } catch (e) {
+    // Try to find JSON object in the text
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    if (match) {
+      try { return JSON.parse(match[0]); } catch(e2) {}
+    }
+    adminToast('AI ตอบกลับไม่ถูกรูปแบบ JSON กรุณาลองใหม่', true);
+    return null;
+  }
+}
+
+// ── API Key Management ──
+function aiSaveApiKey() {
+  const key = document.getElementById('adminAiKey').value.trim();
+  if (!key) {
+    adminToast('กรุณากรอก API Key', true);
+    return;
+  }
+  localStorage.setItem(AI_KEY_STORAGE, key);
+  adminToast('บันทึก API Key สำเร็จ!');
+  aiUpdateKeyStatusInSettings();
+  aiUpdateKeyStatus();
+}
+
+function aiClearApiKey() {
+  if (!confirm('ต้องการลบ API Key ที่บันทึกไว้?')) return;
+  localStorage.removeItem(AI_KEY_STORAGE);
+  document.getElementById('adminAiKey').value = '';
+  adminToast('ลบ API Key แล้ว');
+  aiUpdateKeyStatusInSettings();
+  aiUpdateKeyStatus();
+}
+
+function aiLoadKeyToField() {
+  const key = localStorage.getItem(AI_KEY_STORAGE) || '';
+  document.getElementById('adminAiKey').value = key;
+  aiUpdateKeyStatusInSettings();
+}
+
+function aiUpdateKeyStatusInSettings() {
+  const el = document.getElementById('aiKeyStatus');
+  const key = localStorage.getItem(AI_KEY_STORAGE);
+  if (key) {
+    el.textContent = '✅ AI พร้อมใช้งาน (Key: ...' + key.slice(-6) + ')';
+    el.className = 'ai-key-status ready';
+  } else {
+    el.textContent = '⚠️ ยังไม่ได้ใส่ API Key';
+    el.className = 'ai-key-status missing';
+  }
+}
+
+function aiUpdateKeyStatus() {
+  const key = localStorage.getItem(AI_KEY_STORAGE);
+  const missing = document.getElementById('aiKeyMissing');
+  const ready = document.getElementById('aiKeyReady');
+  if (missing && ready) {
+    missing.style.display = key ? 'none' : 'block';
+    ready.style.display = key ? 'block' : 'none';
+  }
+}
+
+// ── TTS for admin text fields ──
+function aiSpeakText(fieldId) {
+  const el = document.getElementById(fieldId);
+  if (!el) return;
+  const text = el.value || el.textContent || '';
+  if (!text.trim()) {
+    adminToast('ไม่มีข้อความให้อ่าน', true);
+    return;
+  }
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text.trim());
+    u.lang = 'en-US';
+    u.rate = 0.85;
+    window.speechSynthesis.speak(u);
+  } else {
+    adminToast('เบราว์เซอร์ไม่รองรับ Text-to-Speech', true);
+  }
+}
+
+// ── AI Generate Full Lesson ──
+async function aiGenerateLesson() {
+  const topic = document.getElementById('aiTopic').value.trim();
+  const level = document.getElementById('aiLevel').value;
+  const grammar = document.getElementById('aiGrammar').value.trim();
+
+  if (!topic) {
+    adminToast('กรุณาใส่หัวข้อบทเรียน', true);
+    return;
+  }
+
+  const apiKey = localStorage.getItem(AI_KEY_STORAGE);
+  if (!apiKey) {
+    adminToast('กรุณาใส่ Gemini API Key ในตั้งค่า Admin ก่อน', true);
+    return;
+  }
+
+  // Show loading
+  document.getElementById('aiLoadingArea').style.display = 'block';
+  document.getElementById('aiPreviewArea').style.display = 'none';
+  document.getElementById('aiGenerateBtn').disabled = true;
+
+  const levelDescMap = {
+    easy: 'ง่าย (ประโยคสั้น 8-12 คำ, ใช้คำศัพท์พื้นฐาน, Present Simple)',
+    medium: 'ปานกลาง (ประโยคซับซ้อนขึ้น, คำศัพท์หลากหลาย)',
+    hard: 'ยาก (ประโยคยาว, คำศัพท์ขั้นสูง, ไวยากรณ์ซับซ้อน)'
+  };
+
+  const prompt = `สร้างบทเรียนภาษาอังกฤษสำหรับคนไทย ระดับ ${levelDescMap[level]}
+หัวข้อ: ${topic}
+${grammar ? `เน้นไวยากรณ์: ${grammar}` : ''}
+
+ตอบเป็น JSON format ดังนี้:
+{
+  "title": "English title",
+  "titleTh": "ชื่อภาษาไทย",
+  "text": "English passage 80-130 words, natural and engaging, about the topic",
+  "textTh": "คำแปลภาษาไทยของ passage ข้างบน",
+  "vocab": [
+    { "word": "vocabulary word", "phonetic": "/IPA pronunciation/", "pos": "noun/verb/adj/adv etc", "thai": "ความหมายภาษาไทย", "examples": [{"en":"Example sentence in English.","th":"คำแปลประโยคตัวอย่าง"},{"en":"Another example.","th":"ตัวอย่างอีกข้อ"}] }
+  ],
+  "grammarPoints": [
+    { "title": "Grammar Point Name", "titleTh": "ชื่อภาษาไทย", "explain": "อธิบายเป็นภาษาไทยง่ายๆ สำหรับคนไทยที่เรียนภาษาอังกฤษ", "formula": "Subject + Verb + Object", "examples": [{"en":"Example sentence.","th":"คำแปลประโยคตัวอย่าง"}] }
+  ]
+}
+
+สร้างคำศัพท์ 6-8 คำ (เลือกคำที่สำคัญจาก passage) และไวยากรณ์ 2-3 หัวข้อ
+คำศัพท์แต่ละคำต้องมีตัวอย่าง 2 ประโยค
+ไวยากรณ์แต่ละข้อต้องมีตัวอย่าง 2-3 ประโยค
+phonetic ต้องเป็น IPA format เช่น /wɜːrk/
+ตอบ JSON เท่านั้น ไม่ต้องมี markdown code block ไม่ต้องมีข้อความอื่น`;
+
+  const rawResult = await callGemini(prompt);
+
+  // Hide loading
+  document.getElementById('aiLoadingArea').style.display = 'none';
+  document.getElementById('aiGenerateBtn').disabled = false;
+
+  if (!rawResult) return;
+
+  const data = aiParseJSON(rawResult);
+  if (!data) return;
+
+  // Validate basic structure
+  if (!data.title || !data.text || !data.vocab) {
+    adminToast('AI สร้างข้อมูลไม่ครบถ้วน กรุณาลองใหม่', true);
+    return;
+  }
+
+  // Store for saving later
+  _aiGeneratedData = data;
+
+  // Render preview
+  aiRenderPreview(data);
+  document.getElementById('aiPreviewArea').style.display = 'block';
+  document.getElementById('aiPreviewArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  adminToast('AI สร้างบทเรียนสำเร็จ! ตรวจสอบแล้วกดบันทึก');
+}
+
+// ── Render AI Preview ──
+function aiRenderPreview(data) {
+  document.getElementById('aiPreviewTitle').value = data.title || '';
+  document.getElementById('aiPreviewTitleTh').value = data.titleTh || '';
+  document.getElementById('aiPreviewText').value = data.text || '';
+  document.getElementById('aiPreviewTextTh').value = data.textTh || '';
+
+  // Vocab preview
+  const vocabList = document.getElementById('aiPreviewVocabList');
+  const vocab = data.vocab || [];
+  document.getElementById('aiPreviewVocabCount').textContent = vocab.length;
+  vocabList.innerHTML = vocab.map((v, i) => `
+    <div class="ai-preview-item">
+      <div class="ai-preview-item-word">
+        ${v.word}
+        <button class="ai-tts-btn" onclick="aiSpeakWord('${v.word.replace(/'/g, "\\'")}')" title="ฟังเสียง">🔊</button>
+        <span style="font-size:0.75rem;color:var(--text-muted);font-weight:400;margin-left:auto">${v.phonetic || ''} | ${v.pos || ''}</span>
+      </div>
+      <div class="ai-preview-item-details">
+        <strong>${v.thai || ''}</strong>
+      </div>
+      ${v.examples && v.examples.length > 0 ? `
+        <div class="ai-preview-item-examples">
+          ${v.examples.map(ex => `
+            <div style="margin-bottom:4px">
+              <div class="example-en">• ${ex.en}</div>
+              <div class="example-th">&nbsp;&nbsp;${ex.th}</div>
+            </div>`).join('')}
+        </div>` : ''}
+    </div>`).join('');
+
+  // Grammar preview
+  const grammarList = document.getElementById('aiPreviewGrammarList');
+  const gPoints = data.grammarPoints || [];
+  document.getElementById('aiPreviewGrammarCount').textContent = gPoints.length;
+  grammarList.innerHTML = gPoints.map(g => `
+    <div class="ai-preview-grammar">
+      <div class="ai-preview-grammar-title">${g.title} <span style="font-size:0.8rem;color:var(--text-secondary);font-weight:400">(${g.titleTh || ''})</span></div>
+      <div class="ai-preview-grammar-explain">${(g.explain || '').replace(/\n/g, '<br>')}</div>
+      ${g.formula ? `<div class="ai-preview-grammar-formula">${g.formula}</div>` : ''}
+      ${g.examples && g.examples.length > 0 ? `
+        <div class="ai-preview-item-examples">
+          ${g.examples.map(ex => `
+            <div style="margin-bottom:4px">
+              <div class="example-en">• ${ex.en}</div>
+              <div class="example-th">&nbsp;&nbsp;${ex.th}</div>
+            </div>`).join('')}
+        </div>` : ''}
+    </div>`).join('');
+}
+
+// ── AI Speak a single word (for preview) ──
+function aiSpeakWord(word) {
+  if (!word) return;
+  if (window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(word);
+    u.lang = 'en-US';
+    u.rate = 0.8;
+    window.speechSynthesis.speak(u);
+  }
+}
+
+// ── Save AI-generated lesson ──
+function aiSaveLesson() {
+  // Read from editable preview fields (user may have edited)
+  const title = document.getElementById('aiPreviewTitle').value.trim();
+  const titleTh = document.getElementById('aiPreviewTitleTh').value.trim();
+  const text = document.getElementById('aiPreviewText').value.trim();
+  const textTh = document.getElementById('aiPreviewTextTh').value.trim();
+
+  if (!title || !text) {
+    adminToast('กรุณากรอกชื่อและเนื้อเรื่องให้ครบ', true);
+    return;
+  }
+
+  if (!_aiGeneratedData) {
+    adminToast('ไม่มีข้อมูลจาก AI กรุณาสร้างบทเรียนก่อน', true);
+    return;
+  }
+
+  const level = document.getElementById('aiLevel').value;
+  const levelTh = { easy: 'ง่าย', medium: 'ปานกลาง', hard: 'ยาก' }[level];
+  const wordCount = text.split(/\s+/).length;
+  const id = 'ai-' + Date.now();
+
+  const passage = {
+    id, title, titleTh, level, levelTh,
+    desc: 'บทเรียนที่สร้างโดย AI — ' + document.getElementById('aiTopic').value.trim(),
+    grammar: _aiGeneratedData.grammarPoints?.[0]?.title || '-',
+    wordCount, text, textTh,
+    vocab: _aiGeneratedData.vocab || [],
+    grammarPoints: _aiGeneratedData.grammarPoints || [],
+    custom: true
+  };
+
+  const custom = loadCustomPassages();
+  custom.push(passage);
+  saveCustomPassages(custom);
+  mergePassages();
+  renderPassageList();
+  adminRefreshDropdowns();
+
+  // Clear form and preview
+  document.getElementById('aiTopic').value = '';
+  document.getElementById('aiGrammar').value = '';
+  document.getElementById('aiPreviewArea').style.display = 'none';
+  _aiGeneratedData = null;
+
+  adminToast('บันทึกบทเรียน "' + title + '" สำเร็จ!');
+}
+
+// ── AI Auto-fill Vocabulary ──
+async function aiAutoFillVocab() {
+  const word = document.getElementById('adminVocabWord').value.trim();
+  if (!word) {
+    adminToast('กรุณาพิมพ์คำศัพท์ก่อนกดเติมอัตโนมัติ', true);
+    return;
+  }
+
+  const apiKey = localStorage.getItem(AI_KEY_STORAGE);
+  if (!apiKey) {
+    adminToast('กรุณาใส่ Gemini API Key ในตั้งค่า Admin ก่อน', true);
+    return;
+  }
+
+  const btn = event.currentTarget;
+  btn.classList.add('ai-inline-loading');
+  btn.textContent = '⏳ กำลังค้น...';
+
+  const prompt = `ให้ข้อมูลคำศัพท์ภาษาอังกฤษ "${word}" สำหรับคนไทยที่เรียนภาษาอังกฤษ
+ตอบเป็น JSON:
+{
+  "word": "${word}",
+  "phonetic": "/IPA pronunciation/",
+  "pos": "part of speech (noun, verb, adjective, etc.)",
+  "thai": "ความหมายภาษาไทย",
+  "examples": [
+    {"en": "Example sentence 1.", "th": "คำแปลประโยค 1"},
+    {"en": "Example sentence 2.", "th": "คำแปลประโยค 2"}
+  ]
+}
+ตอบ JSON เท่านั้น ไม่ต้องมีข้อความอื่น`;
+
+  const rawResult = await callGemini(prompt);
+  btn.classList.remove('ai-inline-loading');
+  btn.textContent = '🤖 เติมอัตโนมัติ';
+
+  if (!rawResult) return;
+
+  const data = aiParseJSON(rawResult);
+  if (!data) return;
+
+  // Auto-fill form fields
+  if (data.phonetic) document.getElementById('adminVocabPhonetic').value = data.phonetic;
+  if (data.pos) document.getElementById('adminVocabPos').value = data.pos;
+  if (data.thai) document.getElementById('adminVocabThai').value = data.thai;
+
+  // Fill example sentences
+  if (data.examples && data.examples.length > 0) {
+    const container = document.getElementById('adminVocabExamples');
+    container.innerHTML = '';
+    data.examples.forEach((ex, i) => {
+      const row = document.createElement('div');
+      row.className = 'admin-example-row';
+      row.innerHTML = `
+        ${i > 0 ? '<button class="admin-remove-example" onclick="this.parentElement.remove()">✕</button>' : ''}
+        <div class="admin-form-group">
+          <label>ประโยคภาษาอังกฤษ</label>
+          <input type="text" class="admin-vocab-ex-en" value="${ex.en.replace(/"/g, '&quot;')}">
+        </div>
+        <div class="admin-form-group">
+          <label>คำแปลภาษาไทย</label>
+          <input type="text" class="admin-vocab-ex-th" value="${ex.th.replace(/"/g, '&quot;')}">
+        </div>`;
+      container.appendChild(row);
+    });
+  }
+
+  adminToast('AI เติมข้อมูล "' + word + '" สำเร็จ!');
+}
+
+// ── AI Suggest Vocab from Topic ──
+async function aiSuggestVocab() {
+  const topic = document.getElementById('adminVocabSuggestTopic').value.trim();
+  if (!topic) {
+    adminToast('กรุณาใส่หัวข้อก่อนกดแนะนำ', true);
+    return;
+  }
+
+  const apiKey = localStorage.getItem(AI_KEY_STORAGE);
+  if (!apiKey) {
+    adminToast('กรุณาใส่ Gemini API Key ในตั้งค่า Admin ก่อน', true);
+    return;
+  }
+
+  const btn = event.currentTarget;
+  btn.classList.add('ai-inline-loading');
+  btn.textContent = '⏳ กำลังค้น...';
+
+  const prompt = `แนะนำคำศัพท์ภาษาอังกฤษ 10 คำ เกี่ยวกับหัวข้อ "${topic}" สำหรับคนไทยที่เรียนภาษาอังกฤษ
+ตอบเป็น JSON:
+{
+  "suggestions": [
+    { "word": "english word", "thai": "ความหมายไทย", "pos": "noun/verb/adj" }
+  ]
+}
+เลือกคำที่สำคัญและใช้บ่อยในหัวข้อนี้
+ตอบ JSON เท่านั้น ไม่ต้องมีข้อความอื่น`;
+
+  const rawResult = await callGemini(prompt);
+  btn.classList.remove('ai-inline-loading');
+  btn.textContent = '🤖 แนะนำคำศัพท์';
+
+  if (!rawResult) return;
+
+  const data = aiParseJSON(rawResult);
+  if (!data || !data.suggestions) return;
+
+  // Render suggestions
+  const container = document.getElementById('aiVocabSuggestions');
+  container.style.display = 'block';
+  container.innerHTML = `
+    <div class="ai-suggest-list">
+      <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;font-weight:600">เลือกคำที่ต้องการเพิ่ม:</div>
+      ${data.suggestions.map((s, i) => `
+        <div class="ai-suggest-item" onclick="aiPickSuggestedWord('${s.word.replace(/'/g, "\\'")}')">
+          <div>
+            <span class="ai-suggest-word">${s.word}</span>
+            <span style="color:var(--text-muted);font-size:0.75rem;margin-left:6px">${s.pos || ''}</span>
+            <div class="ai-suggest-thai">${s.thai}</div>
+          </div>
+          <button class="ai-suggest-add" onclick="event.stopPropagation();aiPickSuggestedWord('${s.word.replace(/'/g, "\\'")}')">+ เพิ่ม</button>
+        </div>`).join('')}
+    </div>`;
+
+  adminToast('AI แนะนำ ' + data.suggestions.length + ' คำ เลือกคำที่ต้องการ');
+}
+
+// ── Pick a suggested word → fill the word field + auto-fill ──
+function aiPickSuggestedWord(word) {
+  document.getElementById('adminVocabWord').value = word;
+  document.getElementById('aiVocabSuggestions').style.display = 'none';
+  // Auto-fill the rest
+  aiAutoFillVocab();
+}
+
+/* ═══════════════════════════════════════════
+   JS — Lesson Request Queue (Supabase)
+   ═══════════════════════════════════════════ */
+
+const SB_URL_KEY = 'englingo_supabase_url';
+const SB_KEY_KEY = 'englingo_supabase_key';
+const SB_DEFAULT_URL = 'https://edmwctmnasggdtdbcxkb.supabase.co';
+const SB_DEFAULT_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkbXdjdG1uYXNnZ2R0ZGJjeGtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1NzcxMzUsImV4cCI6MjA5MTE1MzEzNX0.ChRd3yQ5MsHiXlCI28PcLaROm6P9nk3R19mb4gzN3Oc';
+let _lrAutoRefreshTimer = null;
+
+// ── Auto-set Supabase defaults ──
+localStorage.setItem(SB_URL_KEY, SB_DEFAULT_URL);
+localStorage.setItem(SB_KEY_KEY, SB_DEFAULT_KEY);
+
+// ── Supabase REST helper ──
+async function supabaseQuery(method, path, body = null) {
+  const url = localStorage.getItem(SB_URL_KEY) || SB_DEFAULT_URL;
+  const key = localStorage.getItem(SB_KEY_KEY) || SB_DEFAULT_KEY;
+  if (!url || !key) {
+    adminToast('กรุณาตั้งค่า Supabase ก่อน (แท็บ ตั้งค่าแอดมิน)', true);
+    return null;
+  }
+
+  const headers = {
+    'apikey': key,
+    'Authorization': 'Bearer ' + key,
+    'Content-Type': 'application/json'
+  };
+  if (method === 'POST') headers['Prefer'] = 'return=representation';
+  if (method === 'DELETE') headers['Prefer'] = 'return=minimal';
+
+  try {
+    const res = await fetch(url + '/rest/v1/' + path, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : undefined
+    });
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      throw new Error('Supabase ' + res.status + ': ' + errText.slice(0, 100));
+    }
+    if (method === 'DELETE') return true;
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  } catch (err) {
+    adminToast('Supabase Error: ' + err.message, true);
+    return null;
+  }
+}
+
+// ── Submit lesson request ──
+async function lrSubmitRequest() {
+  const topic = document.getElementById('lrTopic').value.trim();
+  const level = document.getElementById('lrLevel').value;
+  const grammarFocus = document.getElementById('lrGrammarFocus').value.trim();
+  const notes = document.getElementById('lrNotes').value.trim();
+
+  if (!topic) {
+    adminToast('กรุณาใส่หัวข้อบทเรียน', true);
+    return;
+  }
+
+  const payload = { topic, level };
+  if (grammarFocus) payload.grammar_focus = grammarFocus;
+  if (notes) payload.notes = notes;
+
+  const result = await supabaseQuery('POST', 'lesson_requests', payload);
+  if (result) {
+    adminToast('ส่งคำขอ "' + topic + '" สำเร็จ!');
+    document.getElementById('lrTopic').value = '';
+    document.getElementById('lrGrammarFocus').value = '';
+    document.getElementById('lrNotes').value = '';
+    document.getElementById('lrLevel').value = 'medium';
+    lrFetchRequests();
+  }
+}
+
+// ── Fetch and render requests ──
+async function lrFetchRequests() {
+  const container = document.getElementById('lrRequestList');
+  container.innerHTML = '<div class="lr-loading">⏳ กำลังโหลด...</div>';
+
+  const data = await supabaseQuery('GET', 'lesson_requests?order=created_at.desc&limit=20');
+  if (data === null) {
+    container.innerHTML = '<div class="lr-empty"><p>ไม่สามารถเชื่อมต่อ Supabase ได้<br>กรุณาตรวจสอบการตั้งค่า</p></div>';
+    return;
+  }
+
+  if (data.length === 0) {
+    container.innerHTML = '<div class="lr-empty"><p>ยังไม่มีคำขอ<br>ลองสั่งบทเรียนใหม่ดูสิ! 📝</p></div>';
+  } else {
+    container.innerHTML = data.map(r => lrRenderCard(r)).join('');
+  }
+
+  // Update last refresh time
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('lrLastRefresh').textContent = 'อัพเดทล่าสุด: ' + timeStr + ' (รีเฟรชอัตโนมัติทุก 30 วินาที)';
+}
+
+// ── Render single request card ──
+function lrRenderCard(req) {
+  const statusMap = {
+    pending: { icon: '🟡', label: 'รอดำเนินการ', badge: 'lr-badge-pending' },
+    processing: { icon: '🔵', label: 'กำลังสร้าง', badge: 'lr-badge-processing' },
+    done: { icon: '🟢', label: 'เสร็จแล้ว', badge: 'lr-badge-done' }
+  };
+  const s = statusMap[req.status] || statusMap.pending;
+  const levelMap = { easy: 'ง่าย', medium: 'ปานกลาง', hard: 'ยาก' };
+  const dateStr = new Date(req.created_at).toLocaleDateString('th-TH', {
+    day: 'numeric', month: 'short', year: '2-digit',
+    hour: '2-digit', minute: '2-digit'
+  });
+
+  let actionsHtml = '';
+  if (req.status === 'pending') {
+    actionsHtml = `<button class="admin-btn admin-btn-danger admin-btn-sm" onclick="lrCancelRequest('${req.id}')">🗑️ ยกเลิก</button>`;
+  } else if (req.status === 'done' && req.result_json) {
+    actionsHtml = `<button class="admin-btn admin-btn-primary admin-btn-sm" onclick="lrImportResult('${req.id}')">📥 เพิ่มลงแอป</button>`;
+  }
+
+  return `
+  <div class="lr-request-card lr-status-${req.status}">
+    <div class="lr-request-header">
+      <div class="lr-request-topic">${req.topic}</div>
+      <span class="lr-status-badge ${s.badge}">${s.icon} ${s.label}</span>
+    </div>
+    <div class="lr-request-meta">
+      <span>📊 ${levelMap[req.level] || req.level}</span>
+      ${req.grammar_focus ? `<span>📐 ${req.grammar_focus}</span>` : ''}
+      <span>📅 ${dateStr}</span>
+    </div>
+    ${req.notes ? `<div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:6px;font-style:italic">"${req.notes}"</div>` : ''}
+    ${actionsHtml ? `<div class="lr-request-actions">${actionsHtml}</div>` : ''}
+  </div>`;
+}
+
+// ── Cancel (delete) a pending request ──
+async function lrCancelRequest(id) {
+  if (!confirm('ต้องการยกเลิกคำขอนี้?')) return;
+  const result = await supabaseQuery('DELETE', 'lesson_requests?id=eq.' + id);
+  if (result !== null) {
+    adminToast('ยกเลิกคำขอแล��ว');
+    lrFetchRequests();
+  }
+}
+
+// ── Import completed lesson result into app ──
+async function lrImportResult(id) {
+  // Fetch the specific request to get result_json
+  const data = await supabaseQuery('GET', 'lesson_requests?id=eq.' + id + '&select=*');
+  if (!data || data.length === 0) {
+    adminToast('ไม่พบข้อมูลคำขอ', true);
+    return;
+  }
+
+  const req = data[0];
+  if (!req.result_json) {
+    adminToast('ยังไม่มีผลลัพธ์จาก AI', true);
+    return;
+  }
+
+  const lesson = req.result_json;
+
+  // Validate structure
+  if (!lesson.title || !lesson.text) {
+    adminToast('ข้อมูลบทเรียนไม่สมบูรณ์', true);
+    return;
+  }
+
+  // Create passage object (same format as adminSavePassage)
+  const level = lesson.level || req.level || 'medium';
+  const levelTh = { easy: 'ง่าย', medium: 'ปานกลาง', hard: 'ยาก' }[level] || 'ปานกลาง';
+  const wordCount = lesson.text ? lesson.text.split(/\s+/).length : 0;
+  const passageId = 'nexus-' + Date.now();
+
+  const passage = {
+    id: passageId,
+    title: lesson.title,
+    titleTh: lesson.titleTh || lesson.title_th || '',
+    level: level,
+    levelTh: levelTh,
+    desc: 'บทเรียนจาก Nexus AI — ' + req.topic,
+    grammar: lesson.grammarPoints?.[0]?.title || req.grammar_focus || '-',
+    wordCount: wordCount,
+    text: lesson.text,
+    textTh: lesson.textTh || lesson.text_th || '',
+    vocab: lesson.vocab || [],
+    grammarPoints: lesson.grammarPoints || lesson.grammar_points || [],
+    custom: true
+  };
+
+  // Save to custom passages
+  const custom = loadCustomPassages();
+  custom.push(passage);
+  saveCustomPassages(custom);
+  mergePassages();
+  renderPassageList();
+  adminRefreshDropdowns();
+
+  // Delete the request from Supabase after import
+  await supabaseQuery('DELETE', 'lesson_requests?id=eq.' + id);
+
+  adminToast('เพิ่มบทเรียน "' + lesson.title + '" ลงแอปสำเร็จ!');
+  lrFetchRequests();
+}
+
+// ── Auto refresh timer ──
+function lrStartAutoRefresh() {
+  lrStopAutoRefresh();
+  _lrAutoRefreshTimer = setInterval(() => {
+    // Only refresh if the lesson queue tab is active
+    const tab = document.getElementById('adminTabLessonQueue');
+    if (tab && tab.classList.contains('active')) {
+      lrFetchRequests();
+    }
+  }, 30000);
+}
+
+function lrStopAutoRefresh() {
+  if (_lrAutoRefreshTimer) {
+    clearInterval(_lrAutoRefreshTimer);
+    _lrAutoRefreshTimer = null;
+  }
+}
+
+// ── Supabase Config ──
+function sbSaveConfig() {
+  const url = document.getElementById('adminSupabaseUrl').value.trim().replace(/\/$/, '');
+  const key = document.getElementById('adminSupabaseKey').value.trim();
+
+  if (!url || !key) {
+    adminToast('กรุณากรอก URL และ Anon Key', true);
+    return;
+  }
+
+  localStorage.setItem(SB_URL_KEY, url);
+  localStorage.setItem(SB_KEY_KEY, key);
+  adminToast('บันทึกการตั้งค่า Supabase สำเร็จ!');
+  sbShowStatus('connected', '✅ บันทึกแล้ว');
+}
+
+function sbLoadConfigToFields() {
+  const url = localStorage.getItem(SB_URL_KEY) || '';
+  const key = localStorage.getItem(SB_KEY_KEY) || '';
+  document.getElementById('adminSupabaseUrl').value = url;
+  document.getElementById('adminSupabaseKey').value = key;
+}
+
+async function sbTestConnection() {
+  const url = document.getElementById('adminSupabaseUrl').value.trim().replace(/\/$/, '');
+  const key = document.getElementById('adminSupabaseKey').value.trim();
+
+  if (!url || !key) {
+    sbShowStatus('error', '❌ กรุณากรอก URL และ Key ก่อน');
+    return;
+  }
+
+  sbShowStatus('disconnected', '⏳ กำลังทดสอบ...');
+
+  try {
+    const res = await fetch(url + '/rest/v1/lesson_requests?limit=1', {
+      method: 'GET',
+      headers: {
+        'apikey': key,
+        'Authorization': 'Bearer ' + key,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (res.ok) {
+      sbShowStatus('connected', '✅ เชื่อมต่อสำเร็จ! พร้อมใช้งาน');
+      // Auto-save on successful test
+      localStorage.setItem(SB_URL_KEY, url);
+      localStorage.setItem(SB_KEY_KEY, key);
+    } else {
+      const errText = await res.text().catch(() => '');
+      sbShowStatus('error', '❌ เชื่อมต่อไม่สำเร็จ (' + res.status + ')');
+    }
+  } catch (err) {
+    sbShowStatus('error', '❌ ไม่สามารถเชื่อมต่อได้: ' + err.message);
+  }
+}
+
+function sbShowStatus(type, msg) {
+  const el = document.getElementById('sbStatusIndicator');
+  el.style.display = 'block';
+  el.className = 'sb-status-indicator sb-status-' + type;
+  el.textContent = msg;
+}
+
+// ── Admin Init ──
+function adminInit() {
+  // Store default count before merging
+  if (!PASSAGES._defaultCount) {
+    PASSAGES._defaultCount = PASSAGES.length;
+  }
+
+  // Merge custom passages
+  mergePassages();
+  applyDefaultAdditions();
+
+  // Restore admin session
+  if (isAdminActive()) {
+    setAdminSession(true);
+  }
+
+  // Setup triggers
+  adminSetupLogoTrigger();
+  adminSetupTabs();
+  adminSetupWordCount();
+
+  // PIN enter key
+  document.getElementById('pinInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') adminVerifyPin();
+    if (e.key === 'Escape') adminClosePinDialog();
+  });
+
+  // Close PIN on overlay click
+  document.getElementById('pinOverlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('pinOverlay')) adminClosePinDialog();
+  });
+
+  // Logout button
+  document.getElementById('adminLogout').addEventListener('click', adminLogout);
+}
+
 // ── Event Listeners ──
 function init() {
   loadState();
   applyTheme();
+  adminInit();
   updateWelcomeMessage();
   updateStreakWidget();
   renderPassageList();
