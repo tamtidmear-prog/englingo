@@ -1894,9 +1894,17 @@ body.admin-active .admin-logout-section { display: block; }
       <button class="toggle-translation" id="toggleThai" style="margin-bottom:0">
         <span class="toggle-icon">🇹🇭</span> แสดงคำแปล
       </button>
-      <button class="toggle-translation" id="speakPassageBtn" onclick="speakText(state.currentPassage?.text, this)" style="margin-bottom:0;background:var(--accent);color:#fff">
-        🔊 ฟังบทอ่าน
-      </button>
+      <div id="speakStartWrap">
+        <button class="toggle-translation" id="speakPassageBtn" onclick="startPassageSpeech()" style="margin-bottom:0;background:var(--accent);color:#fff">
+          🔊 ฟังบทอ่าน
+        </button>
+      </div>
+      <div id="speakControlsWrap" style="display:none;gap:6px;align-items:center;flex-wrap:wrap;width:100%">
+        <button onclick="pausePassageSpeech()" id="pauseBtn" style="width:44px;height:44px;border-radius:50%;border:none;background:var(--warning);color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center">⏸️</button>
+        <button onclick="resumePassageSpeech()" id="resumeBtn" style="width:44px;height:44px;border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center">▶️</button>
+        <button onclick="stopPassageSpeech()" style="width:44px;height:44px;border-radius:50%;border:none;background:rgba(231,76,60,0.12);color:#e74c3c;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center">⏹️</button>
+        <span id="passageTimer" style="font-size:0.8rem;color:var(--text-muted)">0:00</span>
+      </div>
     </div>
 
     <div class="reading-passage" id="readingPassage"></div>
@@ -2255,7 +2263,7 @@ body.admin-active .admin-logout-section { display: block; }
     <div class="admin-tab-content" id="adminTabLessonQueue">
       <div class="admin-card">
         <div class="admin-section-title">📋 สั่งบทเรียนใหม่</div>
-        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;line-height:1.6">ส่งคำขอสร้างบทเรียนใหม่ Nexus (AI Agent) จะสร้างเนื้อหาให้แบบ offline แล้วส่งกลับมาเมื่อเสร็จ</p>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;line-height:1.6">ใส่ข้อมูลเท่าที่มี — ส่วนที่ไม่ได้ใส่ AI จะสร้างให้สอดคล้องกับที่ได้รับ</p>
         <div class="admin-form-group">
           <label>หัวข้อบทเรียน *</label>
           <input type="text" id="lrTopic" placeholder="เช่น going to the dentist, job interview, cooking Thai food">
@@ -2269,12 +2277,28 @@ body.admin-active .admin-logout-section { display: block; }
           </select>
         </div>
         <div class="admin-form-group">
+          <label>คำอธิบายบทเรียน (ไม่บังคับ)</label>
+          <input type="text" id="lrDesc" placeholder="เช่น เรียนรู้คำศัพท์เกี่ยวกับการไปหาหมอ ฝึก Past Tense">
+        </div>
+        <div class="admin-form-group">
+          <label>บทอ่านภาษาอังกฤษ (ไม่บังคับ — ถ้ามีใส่ได้เลย ถ้าไม่มี AI สร้างให้)</label>
+          <textarea id="lrPassageText" placeholder="วาง passage ภาษาอังกฤษที่ต้องการ หรือเว้นว่างให้ AI สร้าง" style="min-height:80px"></textarea>
+        </div>
+        <div class="admin-form-group">
+          <label>คำแปลภาษาไทย (ไม่บังคับ)</label>
+          <textarea id="lrPassageTh" placeholder="คำแปลภาษาไทยของบทอ่าน หรือเว้นว่างให้ AI แปลให้" style="min-height:60px"></textarea>
+        </div>
+        <div class="admin-form-group">
+          <label>คำศัพท์ที่ต้องการ (ไม่บังคับ — คั่นด้วยจุลภาค)</label>
+          <input type="text" id="lrVocabList" placeholder="เช่น appointment, symptom, prescription, fever">
+        </div>
+        <div class="admin-form-group">
           <label>เน้นไวยากรณ์ (ไม่บังคับ)</label>
           <input type="text" id="lrGrammarFocus" placeholder="เช่น Past Perfect, Passive Voice">
         </div>
         <div class="admin-form-group">
           <label>หมายเหตุเพิ่มเติม (ไม่บังคับ)</label>
-          <textarea id="lrNotes" placeholder="เช่น เน้นคำศัพท์ที่ใช้ในชีวิตจริง, ต้องการ 10 คำศัพท์, เหมาะสำหรับนักเรียน ม.ปลาย" style="min-height:70px"></textarea>
+          <textarea id="lrNotes" placeholder="เช่น เหมาะสำหรับนักเรียน ม.ปลาย, ต้องการ 10 คำศัพท์" style="min-height:60px"></textarea>
         </div>
         <button class="admin-btn admin-btn-primary" onclick="lrSubmitRequest()">📋 ส่งคำขอ</button>
       </div>
@@ -2847,6 +2871,59 @@ const PASSAGES = [
         ]
       }
     ]
+  },
+  {
+    id: 'going-to-school',
+    title: 'Going to School',
+    titleTh: 'ไปโรงเรียน',
+    level: 'medium',
+    levelTh: 'ปานกลาง',
+    desc: 'เรียนรู้คำศัพท์เกี่ยวกับการไปโรงเรียน ฝึก Present Simple และ Prepositions of Time',
+    grammar: 'Present Simple + Prepositions',
+    wordCount: 120,
+    text: `Every morning, my alarm clock rings at six thirty. I quickly get out of bed and put on my school uniform. After brushing my teeth and washing my face, I go downstairs for breakfast. My mother usually prepares rice porridge or toast with jam. I grab my backpack and check that I have all my textbooks and notebooks. My father drives me to school, and we leave the house at seven fifteen. The traffic is always heavy during rush hour, so we sometimes take a shortcut through the small streets. I arrive at school around seven forty-five. Before class begins, I chat with my classmates in the hallway. The bell rings at eight o'clock, and everyone rushes to their seats. My favorite subject is science because we do interesting experiments. After six periods, school finishes at three thirty, and I take the school bus home.`,
+    textTh: `ทุกเช้า นาฬิกาปลุกของฉันดังตอนหกโมงครึ่ง ฉันรีบลุกจากเตียงและสวมชุดนักเรียน หลังจากแปรงฟันและล้างหน้า ฉันลงไปกินข้าวเช้าชั้นล่าง แม่มักจะเตรียมข้าวต้มหรือขนมปังปิ้งทาแยม ฉันหยิบกระเป๋าเป้และเช็คว่ามีหนังสือเรียนและสมุดครบ พ่อขับรถไปส่งที่โรงเรียน เราออกจากบ้านตอนเจ็ดโมงสิบห้า การจราจรหนาแน่นเสมอในชั่วโมงเร่งด่วน เราจึงบางครั้งใช้ทางลัดผ่านซอยเล็กๆ ฉันถึงโรงเรียนประมาณเจ็ดโมงสี่สิบห้า ก่อนเข้าเรียน ฉันคุยกับเพื่อนร่วมชั้นในทางเดิน กริ่งดังตอนแปดโมง ทุกคนรีบไปนั่งที่เก้าอี้ วิชาที่ชอบที่สุดคือวิทยาศาสตร์เพราะทำการทดลองที่น่าสนใจ หลังจากเรียน 6 คาบ โรงเรียนเลิกตอนบ่ายสามโมงครึ่ง ฉันนั่งรถโรงเรียนกลับบ้าน`,
+    vocab: [
+      { word: 'alarm clock', phonetic: '/əˈlɑːrm klɒk/', pos: 'noun', thai: 'นาฬิกาปลุก', examples: [{ en: 'I set my alarm clock for six every morning.', th: 'ฉันตั้งนาฬิกาปลุกหกโมงทุกเช้า' }, { en: 'The alarm clock woke me up too early.', th: 'นาฬิกาปลุกปลุกฉันเร็วเกินไป' }] },
+      { word: 'uniform', phonetic: '/ˈjuːnɪfɔːrm/', pos: 'noun', thai: 'เครื่องแบบ, ชุดนักเรียน', examples: [{ en: 'Students must wear a uniform to school.', th: 'นักเรียนต้องสวมชุดนักเรียนไปโรงเรียน' }, { en: 'Her uniform was neatly ironed.', th: 'ชุดนักเรียนของเธอรีดเรียบร้อย' }] },
+      { word: 'backpack', phonetic: '/ˈbækpæk/', pos: 'noun', thai: 'กระเป๋าเป้', examples: [{ en: 'My backpack is too heavy with all these books.', th: 'กระเป๋าเป้หนักมากเพราะหนังสือเยอะ' }, { en: 'She bought a new backpack for school.', th: 'เธอซื้อกระเป๋าเป้ใหม่สำหรับไปโรงเรียน' }] },
+      { word: 'textbook', phonetic: '/ˈtekstbʊk/', pos: 'noun', thai: 'หนังสือเรียน', examples: [{ en: 'Open your textbook to page fifty.', th: 'เปิดหนังสือเรียนหน้าห้าสิบ' }, { en: 'This textbook explains grammar clearly.', th: 'ตำราเรียนเล่มนี้อธิบายไวยากรณ์ชัดเจน' }] },
+      { word: 'rush hour', phonetic: '/rʌʃ aʊər/', pos: 'noun', thai: 'ชั่วโมงเร่งด่วน', examples: [{ en: 'Traffic is terrible during rush hour.', th: 'การจราจรแย่มากในชั่วโมงเร่งด่วน' }, { en: 'I avoid driving during rush hour.', th: 'ฉันหลีกเลี่ยงขับรถในชั่วโมงเร่งด่วน' }] },
+      { word: 'shortcut', phonetic: '/ˈʃɔːrtkʌt/', pos: 'noun', thai: 'ทางลัด', examples: [{ en: 'We took a shortcut through the park.', th: 'เราใช้ทางลัดผ่านสวน' }, { en: 'This shortcut saves ten minutes.', th: 'ทางลัดนี้ประหยัดเวลาสิบนาที' }] },
+      { word: 'experiment', phonetic: '/ɪkˈsperɪmənt/', pos: 'noun', thai: 'การทดลอง', examples: [{ en: 'We did a chemistry experiment in the lab.', th: 'เราทำการทดลองเคมีในห้องแล็บ' }, { en: 'The experiment showed interesting results.', th: 'การทดลองแสดงผลลัพธ์ที่น่าสนใจ' }] },
+      { word: 'classmate', phonetic: '/ˈklæsmeɪt/', pos: 'noun', thai: 'เพื่อนร่วมชั้น', examples: [{ en: 'My classmate helped me with homework.', th: 'เพื่อนร่วมชั้นช่วยฉันทำการบ้าน' }, { en: 'I have known my classmates since first grade.', th: 'ฉันรู้จักเพื่อนร่วมชั้นตั้งแต่ ป.1' }] }
+    ],
+    grammarPoints: [
+      { title: 'Prepositions of Time (at, in, on)', titleTh: 'คำบุพบทบอกเวลา', explain: 'ใช้ at กับเวลาที่เจาะจง (at six, at noon)\nใช้ in กับช่วงเวลา (in the morning, in June)\nใช้ on กับวัน (on Monday, on my birthday)', formula: 'at + เวลา | in + ช่วง/เดือน/ปี | on + วัน/วันที่', examples: [{ en: 'The bell rings at eight o\'clock.', th: 'กริ่งดังตอนแปดโมง' }, { en: 'I eat breakfast in the morning.', th: 'ฉันกินข้าวเช้าในตอนเช้า' }, { en: 'We have a test on Friday.', th: 'เรามีสอบวันศุกร์' }] },
+      { title: 'Present Simple for Routines', titleTh: 'ปัจจุบันกาลสำหรับกิจวัตร', explain: 'ใช้เมื่อพูดถึงสิ่งที่ทำเป็นประจำ ทำซ้ำๆ\nมักใช้กับ: always, usually, sometimes, every day, never\nกริยาเติม s/es เมื่อประธานเป็น he/she/it', formula: 'Subject + Verb(s/es) + Object', examples: [{ en: 'My alarm clock rings at six thirty.', th: 'นาฬิกาปลุกดังตอนหกโมงครึ่ง' }, { en: 'School finishes at three thirty.', th: 'โรงเรียนเลิกตอนบ่ายสามโมงครึ่ง' }] },
+      { title: 'Adverbs of Frequency', titleTh: 'คำวิเศษณ์บอกความถี่', explain: 'วางก่อนกริยาหลัก แต่หลัง verb to be\nalways (100%) → usually (80%) → often (60%) → sometimes (40%) → rarely (10%) → never (0%)', formula: 'Subject + Adverb + Verb', examples: [{ en: 'My mother usually prepares breakfast.', th: 'แม่มักจะเตรียมอาหารเช้า' }, { en: 'The traffic is always heavy.', th: 'การจราจรหนาแน่นเสมอ' }] }
+    ]
+  },
+  {
+    id: 'drawing-cartoon',
+    title: 'Drawing Cartoon Characters',
+    titleTh: 'วาดตัวการ์ตูน',
+    level: 'easy',
+    levelTh: 'ง่าย',
+    desc: 'เรียนรู้คำศัพท์เกี่ยวกับการวาดรูปการ์ตูน ฝึก Present Simple และ Imperative',
+    grammar: 'Present Simple + Imperative',
+    wordCount: 95,
+    text: `I like to draw cartoon characters in my free time. First, I pick up my pencil and open my sketchbook. I start with a circle for the head. Then, I add two big eyes and a small nose. Next, I draw a curved line for the mouth to make the character smile. I use different colors to make the picture more beautiful. My favorite character is a little cat with a bow on its head. I always share my drawings with my friends at school. They say my cartoons are cute and funny. Drawing makes me happy and relaxed.`,
+    textTh: `ฉันชอบวาดตัวการ์ตูนในเวลาว่าง อย่างแรก ฉันหยิบดินสอและเปิดสมุดสเก็ตช์ ฉันเริ่มจากวงกลมสำหรับหัว จากนั้น ฉันเพิ่มตาสองข้างใหญ่ๆ และจมูกเล็กๆ ต่อมา ฉันวาดเส้นโค้งสำหรับปากเพื่อให้ตัวการ์ตูนยิ้ม ฉันใช้สีหลายสีเพื่อทำให้ภาพสวยขึ้น ตัวการ์ตูนที่ฉันชอบที่สุดคือแมวตัวเล็กที่มีโบว์บนหัว ฉันมักจะแชร์รูปวาดกับเพื่อนๆ ที่โรงเรียน พวกเขาบอกว่าการ์ตูนของฉันน่ารักและตลก การวาดรูปทำให้ฉันมีความสุขและผ่อนคลาย`,
+    vocab: [
+      { word: 'draw', phonetic: '/drɔː/', pos: 'verb', thai: 'วาด, วาดรูป', examples: [{ en: 'Can you draw a picture of a cat?', th: 'คุณวาดรูปแมวได้ไหม?' }, { en: 'She draws every day after school.', th: 'เธอวาดรูปทุกวันหลังเลิกเรียน' }] },
+      { word: 'pencil', phonetic: '/ˈpensəl/', pos: 'noun', thai: 'ดินสอ', examples: [{ en: 'I need a sharp pencil to draw.', th: 'ฉันต้องการดินสอที่เหลาแล้วเพื่อวาดรูป' }, { en: 'She bought a set of colored pencils.', th: 'เธอซื้อดินสอสีชุดหนึ่ง' }] },
+      { word: 'sketchbook', phonetic: '/ˈsketʃbʊk/', pos: 'noun', thai: 'สมุดสเก็ตช์, สมุดวาดรูป', examples: [{ en: 'My sketchbook is full of cartoon drawings.', th: 'สมุดสเก็ตช์ของฉันเต็มไปด้วยรูปการ์ตูน' }, { en: 'He carries his sketchbook everywhere.', th: 'เขาพกสมุดสเก็ตช์ไปทุกที่' }] },
+      { word: 'circle', phonetic: '/ˈsɜːrkl/', pos: 'noun', thai: 'วงกลม', examples: [{ en: 'Draw a circle for the head.', th: 'วาดวงกลมสำหรับหัว' }, { en: 'The children sat in a circle.', th: 'เด็กๆ นั่งเป็นวงกลม' }] },
+      { word: 'curved', phonetic: '/kɜːrvd/', pos: 'adjective', thai: 'โค้ง, เป็นเส้นโค้ง', examples: [{ en: 'Draw a curved line for the smile.', th: 'วาดเส้นโค้งสำหรับรอยยิ้ม' }, { en: 'The road is curved near the mountain.', th: 'ถนนโค้งใกล้ภูเขา' }] },
+      { word: 'character', phonetic: '/ˈkærəktər/', pos: 'noun', thai: 'ตัวละคร, ตัวการ์ตูน', examples: [{ en: 'My favorite cartoon character is Doraemon.', th: 'ตัวการ์ตูนที่ชอบที่สุดคือโดราเอมอน' }, { en: 'She created a new character for her comic.', th: 'เธอสร้างตัวละครใหม่สำหรับหนังสือการ์ตูน' }] },
+      { word: 'share', phonetic: '/ʃeər/', pos: 'verb', thai: 'แชร์, แบ่งปัน', examples: [{ en: 'I share my lunch with my friend.', th: 'ฉันแบ่งอาหารกลางวันกับเพื่อน' }, { en: 'She shared her drawings on social media.', th: 'เธอแชร์รูปวาดบนโซเชียลมีเดีย' }] },
+      { word: 'relaxed', phonetic: '/rɪˈlækst/', pos: 'adjective', thai: 'ผ่อนคลาย', examples: [{ en: 'I feel relaxed after drawing.', th: 'ฉันรู้สึกผ่อนคลายหลังวาดรูป' }, { en: 'Listening to music makes me relaxed.', th: 'การฟังเพลงทำให้ฉันผ่อนคลาย' }] }
+    ],
+    grammarPoints: [
+      { title: 'Imperative Sentences', titleTh: 'ประโยคคำสั่งและคำแนะนำ', explain: 'ใช้กริยาช่องที่ 1 ขึ้นต้นประโยคเลย ไม่ต้องมีประธาน\nใช้เมื่อสั่ง แนะนำ หรือบอกขั้นตอน\nเพิ่ม Please เพื่อให้สุภาพขึ้น\nเพิ่ม Don\'t ข้างหน้าเพื่อห้าม', formula: 'Verb + Object (ไม่มี Subject)', examples: [{ en: 'Draw a circle for the head.', th: 'วาดวงกลมสำหรับหัว' }, { en: 'Open your sketchbook.', th: 'เปิดสมุดสเก็ตช์' }, { en: 'Don\'t use too many colors.', th: 'อย่าใช้สีเยอะเกินไป' }] },
+      { title: 'Sequence Words (First, Then, Next)', titleTh: 'คำบอกลำดับขั้นตอน', explain: 'ใช้เรียงลำดับขั้นตอนการทำสิ่งต่างๆ\nFirst (อย่างแรก) → Then (จากนั้น) → Next (ต่อมา) → After that (หลังจากนั้น) → Finally (สุดท้าย)\nวางไว้ต้นประโยค ตามด้วยเครื่องหมายจุลภาค', formula: 'First/Then/Next/Finally, + Subject + Verb', examples: [{ en: 'First, I pick up my pencil.', th: 'อย่างแรก ฉันหยิบดินสอ' }, { en: 'Then, I add two big eyes.', th: 'จากนั้น ฉันเพิ่มตาใหญ่สองข้าง' }, { en: 'Next, I draw a curved line for the mouth.', th: 'ต่อมา ฉันวาดเส้นโค้งสำหรับปาก' }] }
+    ]
   }
 ];
 
@@ -3278,6 +3355,103 @@ function speakText(text, btn) {
   u.onerror = restore;
   window.speechSynthesis.speak(u);
   setTimeout(restore, Math.max(5000, text.length * 80));
+}
+
+let _pState = 'stopped';
+let _pWords = [];
+let _pWordIdx = 0;
+let _pTimerInterval = null;
+let _pElapsed = 0;
+
+function _formatTime(sec) {
+  return Math.floor(sec / 60) + ':' + String(Math.floor(sec % 60)).padStart(2, '0');
+}
+
+function _pShowControls(show) {
+  document.getElementById('speakStartWrap').style.display = show ? 'none' : '';
+  document.getElementById('speakControlsWrap').style.display = show ? 'flex' : 'none';
+}
+
+function _pShowPause() {
+  document.getElementById('pauseBtn').style.display = '';
+  document.getElementById('resumeBtn').style.display = 'none';
+}
+
+function _pShowResume() {
+  document.getElementById('pauseBtn').style.display = 'none';
+  document.getElementById('resumeBtn').style.display = '';
+}
+
+function _pStartTimer() {
+  if (_pTimerInterval) clearInterval(_pTimerInterval);
+  _pTimerInterval = setInterval(() => {
+    if (_pState === 'playing') _pElapsed++;
+    document.getElementById('passageTimer').textContent = _formatTime(_pElapsed);
+  }, 1000);
+}
+
+let _pSentences = [];
+let _pSentIdx = 0;
+let _pSpeaking = false;
+
+function _pSplitSentences(text) {
+  return text.match(/[^.!?]+[.!?]+/g)?.map(s => s.trim()).filter(Boolean) || [text];
+}
+
+function _pSpeakCurrent() {
+  const synth = window.speechSynthesis;
+  if (_pState !== 'playing' || _pSentIdx >= _pSentences.length) {
+    stopPassageSpeech();
+    return;
+  }
+  _pSpeaking = true;
+  const u = new SpeechSynthesisUtterance(_pSentences[_pSentIdx]);
+  u.lang = 'en-US';
+  u.rate = 0.85;
+  u.onend = () => {
+    _pSpeaking = false;
+    if (_pState === 'playing') {
+      _pSentIdx++;
+      _pSpeakCurrent();
+    }
+  };
+  u.onerror = u.onend;
+  synth.speak(u);
+}
+
+function startPassageSpeech() {
+  const text = state.currentPassage?.text;
+  if (!text || !window.speechSynthesis) return;
+  _pSentences = _pSplitSentences(text);
+  _pSentIdx = 0;
+  _pElapsed = 0;
+  _pState = 'playing';
+  _pShowControls(true);
+  _pShowPause();
+  _pStartTimer();
+  _pSpeakCurrent();
+}
+
+function pausePassageSpeech() {
+  window.speechSynthesis?.cancel();
+  _pState = 'paused';
+  _pSpeaking = false;
+  _pShowResume();
+}
+
+function resumePassageSpeech() {
+  _pState = 'playing';
+  _pShowPause();
+  _pSpeakCurrent();
+}
+
+function stopPassageSpeech() {
+  window.speechSynthesis?.cancel();
+  _pState = 'stopped';
+  _pWordIdx = 0;
+  _pElapsed = 0;
+  if (_pTimerInterval) { clearInterval(_pTimerInterval); _pTimerInterval = null; }
+  _pShowControls(false);
 }
 
 // ── Vocab List (all) ──
@@ -4669,6 +4843,10 @@ async function supabaseQuery(method, path, body = null) {
 async function lrSubmitRequest() {
   const topic = document.getElementById('lrTopic').value.trim();
   const level = document.getElementById('lrLevel').value;
+  const desc = document.getElementById('lrDesc').value.trim();
+  const passageText = document.getElementById('lrPassageText').value.trim();
+  const passageTh = document.getElementById('lrPassageTh').value.trim();
+  const vocabList = document.getElementById('lrVocabList').value.trim();
   const grammarFocus = document.getElementById('lrGrammarFocus').value.trim();
   const notes = document.getElementById('lrNotes').value.trim();
 
@@ -4678,6 +4856,10 @@ async function lrSubmitRequest() {
   }
 
   const payload = { topic, level };
+  if (desc) payload.desc_text = desc;
+  if (passageText) payload.passage_text = passageText;
+  if (passageTh) payload.passage_th = passageTh;
+  if (vocabList) payload.vocab_list = vocabList;
   if (grammarFocus) payload.grammar_focus = grammarFocus;
   if (notes) payload.notes = notes;
 
@@ -4685,6 +4867,10 @@ async function lrSubmitRequest() {
   if (result) {
     adminToast('ส่งคำขอ "' + topic + '" สำเร็จ!');
     document.getElementById('lrTopic').value = '';
+    document.getElementById('lrDesc').value = '';
+    document.getElementById('lrPassageText').value = '';
+    document.getElementById('lrPassageTh').value = '';
+    document.getElementById('lrVocabList').value = '';
     document.getElementById('lrGrammarFocus').value = '';
     document.getElementById('lrNotes').value = '';
     document.getElementById('lrLevel').value = 'medium';
